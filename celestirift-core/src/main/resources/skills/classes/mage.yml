@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  MAGE - control and burst.  Palette: frost #38bdf8, arcane #a855f7, storm #60a5fa
+#  Loop: Frostbolt stacks Chill (max 3) -> Shatter consumes it for big damage.
+#
+#   Lv 1   Frostbolt    skill-shot; Chill: -15% speed, +5% damage taken per stack
+#   Lv 5   Shatter      ice erupts under chilled enemies: 6 + 5 per Chill stack
+#   Lv 10  Stormcall    0.75 s cast; lightning jumps between 5 enemies
+#   Lv 20  Cataclysm    2 s channel; a warned meteor
+#   Passive ManaBarrier at low health: an arcane shield (once a minute)
+# =====================================================================
+
+Frostbolt:
+  description: "<gray>A spiralling frost bolt. Chills on hit (stacks 3x)."
+  cooldown: 1.5
+  mana: 12
+  conditions: [ { class: Mage } ]
+  skills:
+  - projectiletrail: { particle: DUST_COLOR_TRANSITION, color: "#38bdf8", tocolor: "#e0f2fe", size: 1.3, speed: 1.25, maxdistance: 30, shape: helix, shaperadius: 0.28, shapepoints: 2, coilspeed: 2, hitradius: 1.1, damage: "4 + <caster.level> * 0.2", onhit: Frostbolt_Hit }
+  - sound: { sound: entity.snow_golem.shoot, pitch: 1.5 }
+  - sound: { sound: block.amethyst_block.chime, volume: 0.5, pitch: 1.8 }
+
+Frostbolt_Hit:
+  skills:
+  - aura: { id: Chill, type: debuff, duration: 120, maxstacks: 3, speed: -0.15, damage-taken: 0.05, particle: SNOWFLAKE }
+    target: trigger
+  - skill: Fx_FrostBurst
+
+Shatter:
+  description: "<gray>Ice erupts under every chilled enemy: 6 + 5 damage per Chill stack."
+  cooldown: 8
+  mana: 30
+  conditions: [ { class: Mage }, { level: 5 } ]
+  skills:
+  - circle: { particle: DUST, color: "#bae6fd", size: 1.2, radius: 10, points: 90 }
+    target: casterLocation
+  - display: { type: block, material: PACKED_ICE, scale: 0.1, endscale: 1.5, tilt: 12, duration: 6, onend: Shatter_Spike }
+    target: { nearby: { radius: 10 } }
+    if: [ { hasaura: Chill } ]
+  - display: { type: block, material: BLUE_ICE, scale: 0.1, endscale: 0.8, tilt: -25, duration: 6 }
+    target: { nearby: { radius: 10 } }
+    if: [ { hasaura: Chill } ]
+  - delay: 6
+  - damage: "6 + 5 * <target.aura.chill>"
+    target: { nearby: { radius: 10 } }
+    if: [ { hasaura: Chill } ]
+  - removeaura: Chill
+    target: { nearby: { radius: 10 } }
+  - sound: { sound: block.glass.break, pitch: 0.6 }
+
+Shatter_Spike:
+  skills:
+  - skill: Fx_FrostBurst
+
+Stormcall:
+  description: "<gray>Gather the storm, then lightning leaps between 5 enemies (-20% per jump)."
+  cooldown: 7
+  mana: 28
+  cast-time: 15
+  cast-interrupt: [damage]
+  conditions: [ { class: Mage }, { level: 10 } ]
+  skills:
+  - helix: { particle: DUST_COLOR_TRANSITION, color: "#60a5fa", tocolor: "#e0e7ff", size: 1, radius: 0.8, height: 2.6, coils: 3, points: 40, strands: 3 }
+    target: casterLocation
+  - chain: { damage: "8 + <caster.level> * 0.3", jumps: 5, radius: 6, decay: 0.8, color: "#93c5fd", onhit: Stormcall_Hit }
+    target: { target: 25 }
+  - sound: { sound: entity.lightning_bolt.thunder, volume: 0.4, pitch: 1.8 }
+
+Stormcall_Hit:
+  skills:
+  - skill: Fx_StormBurst
+
+Cataclysm:
+  description: "<gray>Channel 2 s, then call a burning meteor where you look."
+  cooldown: 30
+  mana: 60
+  cast-time: 40
+  conditions: [ { class: Mage }, { level: 20 } ]
+  skills:
+  - telegraph: { radius: 5, duration: 24, color: "#ff4d1a" }
+    target: { targetLocation: { range: 35 } }
+  - meteor: { block: MAGMA_BLOCK, scale: 2.2, height: 22, duration: 24, trail: FLAME, onland: Cataclysm_Impact }
+    target: { targetLocation: { range: 35 } }
+  - sound: { sound: entity.blaze.ambient, pitch: 0.5 }
+
+Cataclysm_Impact:
+  skills:
+  - damage: "20 + <caster.level> * 0.8"
+    target: { nearby: 5 }
+  - ignite: 80
+    target: { nearby: 5 }
+  - push: { velocity: 1.2, mode: away, y: 0.5 }
+    target: { nearby: 5 }
+  - shockwave: { particle: FLAME, startradius: 0.5, maxradius: 7, speed: 0.6, density: 2 }
+    target: origin
+  - skill: Fx_FireBurst
+
+# --- Passive (classes.yml: low_health) ---------------------------------------
+ManaBarrier:
+  cooldown: 60
+  skills:
+  - aura: { id: ManaBarrier, duration: 160, shield: "5 + <caster.level> * 0.25", particle: ENCHANT }
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#a855f7", tocolor: "#f0abfc", size: 1, radius: 1.4, points: 60 }
+    target: casterLocation
+  - sound: { sound: block.beacon.activate, pitch: 1.8 }

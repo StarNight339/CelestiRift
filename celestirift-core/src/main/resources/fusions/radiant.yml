@@ -1,0 +1,5 @@
+# Gem of Judgement + Blade Gem -> Radiant Gem. Field reference: fusions.yml
+
+Radiant:
+  ingredients: [SmiteGem, BladeGem]
+  result-gem: RadiantGem

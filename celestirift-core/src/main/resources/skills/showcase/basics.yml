@@ -1,0 +1,141 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Basics - the structured skill format, step by step
+#
+#  Each skill has optional settings and a list of lines under "skills:".
+#  A line is ONE mechanic plus optional target / if / chance:
+#
+#    - damage: { amount: 6 }          # mechanic + attributes
+#      target: { nearby: 5 }          # who it hits (default: yourself)
+#      if: [ { health: ">10" } ]      # conditions (all must pass)
+#      chance: 0.5                    # 50% chance to run
+#
+#  Shorthand: a single value fills the mechanic's main attribute:
+#    - delay: 20        same as  delay: { ticks: 20 }
+#    - heal: 8          same as  heal: { amount: 8 }
+#    - message: "Hi"    same as  message: { msg: "Hi" }
+#
+#  Numbers can scale with formulas (evaluated on every cast):
+#    - damage: "6 + <caster.level> * 0.5"
+#  Variables: <caster.|target.|trigger.> + hp, mhp, hppct, level, mana, maxmana,
+#  armor, distance; and <power>. Functions: min max clamp floor ceil round sqrt random.
+#
+#  Area targets hit only ENEMIES by default (never your pets, villagers, armor stands
+#  or - with combat.pvp: false - players). Options for nearby / target:
+#      target: { nearby: { radius: 6, filter: allies, limit: 3, sort: nearest } }
+#    filter: enemies | allies | players | mobs | all
+#    sort:   nearest | furthest | random | lowesthp
+#
+#  The classic one-line format still works anywhere, mixed freely:
+#    - damage{amount=6} @NearbyEntities{radius=5} ?health{value=>10}
+#
+#  Tips
+#   * Quote text that starts with < > ! @ * & or contains ": " or " #".
+#   * Every mechanic/attribute is listed in plugins/CelestiRift/docs/reference.md.
+#   * VS Code + "YAML" extension (Red Hat) gives autocomplete thanks to the
+#     schema line at the top of this file.
+#   * /cr validate shows typos and mistakes with file:line.
+#
+#  Reload with /cr reload · test with /cr cast <Skill> or /cr give <Skill>
+#  The gem skills (Fireball, FrostNova, Heal, Smite) live in skills/gems/.
+# =====================================================================
+
+
+BladeCombo:
+  description: "<gray>Three quick strikes."
+  cooldown: 5
+  skills:
+  # A timeline: three hits spaced out using delay (20 ticks = 1 second).
+  - damage: 3
+    target: target
+  - particle: { type: CRIT, amount: 15 }
+    target: target
+  - delay: 10
+  - damage: 3
+    target: target
+  - particle: { type: CRIT, amount: 15 }
+    target: target
+  - delay: 10
+  - damage: 6
+    target: target
+  - sound: { sound: entity.player.attack.crit }
+
+
+BlinkStrike:
+  description: "<gray>Teleport to the block you look at."
+  cooldown: 7
+  skills:
+  - particle: { type: PORTAL, amount: 40 }
+  - teleport:
+    target: { targetLocation: 20 }
+  - sound: { sound: entity.enderman.teleport }
+  - message: "<light_purple>Blink!"
+
+
+Leap:
+  cooldown: 4
+  mana: 10
+  skills:
+  - leap: { forward: 1.6, up: 0.9 }
+  - sound: { sound: entity.rabbit.jump }
+
+
+# Flight for 15 seconds (300 ticks), with a kick off the ground to start.
+# Slow Falling is granted automatically if it runs out mid-air (safeLand).
+Levitate:
+  description: "<gray>Fly for 15 seconds."
+  cooldown: 30
+  mana: 50
+  skills:
+  - fly: { duration: 300, speed: 0.15, launch: 0.6 }
+  - particle: { type: END_ROD, amount: 40, spread: 0.8 }
+  - sound: { sound: item.elytra.flying, pitch: 1.4 }
+  - message: "<aqua>You take flight! <gray>(15s)"
+
+
+# Three baby zombie minions that despawn after 30s and attack your target.
+# They can't hit you — summons are tagged with their owner.
+RaiseDead:
+  description: "<gray>Raise three minions for 30 seconds."
+  cooldown: 25
+  mana: 45
+  skills:
+  - summon:
+      type: ZOMBIE
+      amount: 3
+      radius: 2.5
+      duration: 600
+      health: 20
+      baby: true
+      name: "<dark_red>Risen Minion"
+    target: casterLocation
+  - particle: { type: SOUL, amount: 50, spread: 2 }
+    target: casterLocation
+  - sound: { sound: entity.zombie_villager.converted, pitch: 0.6 }
+  - message: "<dark_red>The dead answer your call."
+
+
+# Snatch whatever your target is holding straight into your inventory.
+Pickpocket:
+  cooldown: 12
+  mana: 25
+  skills:
+  - stealitem: { slot: hand, amount: 1 }
+    target: { target: 6 }
+  - particle: { type: SMOKE, amount: 15 }
+    target: { target: 6 }
+  - sound: { sound: entity.item.pickup, pitch: 1.6 }
+  - message: "<yellow>You lift an item from <target.name>."
+
+
+# A meta-skill: casts other skills, gated by a SKILL-LEVEL condition.
+# Above 10 HP the skill doesn't cast at all — no cooldown or mana is spent.
+Desperation:
+  description: "<gray>Below 10 HP: heal and blast enemies away."
+  cooldown: 30
+  conditions:
+  - health: "<10"          # quote it: < and > are special in YAML
+  skills:
+  - skill: Heal
+  - skill: FrostNova
+  - message: "<red>Desperation activates!"

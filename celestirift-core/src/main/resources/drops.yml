@@ -1,0 +1,40 @@
+# =====================================================================
+#  CelestiRift drops: gems / Shardvoid / XP from mobs and bosses.
+#  Every table that matches a death applies. Split into drops/*.yml if you like.
+#
+#  Match (all given must match; omit to match any):
+#    mobs: [ZOMBIE, HUSK]       entity types
+#    name: "Captain"            custom name contains (case-insensitive)
+#    tag: elite                 scoreboard tag (/tag @e add elite)
+#    boss: FrostLord            a bosses.yml id
+#    worlds: [world]
+#    player-kill-only: true     (default) only when a player gets the kill
+#  Rewards:
+#    xp: 5                      CelestiRift XP to the killer
+#    looting-bonus: 0.01        +chance per Looting level on the killer's weapon
+#    drops:
+#    - { gem: EmberGem, chance: 0.05 }          gems.yml id (amount: n optional)
+#    - { shardvoid: 1, chance: 0.01 }           Shardvoid upgrade items
+# =====================================================================
+
+CommonHostiles:
+  mobs: [ZOMBIE, HUSK, DROWNED, SKELETON, STRAY, SPIDER, CREEPER]
+  xp: 5
+  looting-bonus: 0.005
+  drops:
+  - { gem: MendingGem, chance: 0.01 }
+  - { shardvoid: 1, chance: 0.003 }
+
+Blazes:
+  mobs: [BLAZE]
+  xp: 12
+  drops:
+  - { gem: EmberGem, chance: 0.04 }
+
+# Anything you tag yourself, e.g. /tag @e[type=zombie,limit=1,sort=nearest] add elite
+Elites:
+  tag: elite
+  xp: 40
+  drops:
+  - { gem: DarkGem, chance: 0.25 }
+  - { shardvoid: 1, chance: 0.1 }

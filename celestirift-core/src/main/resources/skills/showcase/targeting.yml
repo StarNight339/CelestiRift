@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Targeting shapes and filters.
+#    target: { nearby: { radius: 8, filter: allies, sort: lowesthp, limit: 2 } }
+#    target: { cone: { angle: 90, range: 4 } }      in front of you
+#    target: { line: { length: 12, width: 1.5 } }    a straight strip
+#    target: { ring: { inner: 3, outer: 7 } }        a donut around the origin
+#  filter: enemies (default for areas) | allies | players | mobs | all
+#  sort:   nearest | furthest | random | lowesthp
+# =====================================================================
+
+
+# Example skill-shot with the line targeter (bind it to a gem or /cr give Lance).
+Lance:
+  description: "<gray>Pierce every enemy in a 12-block line."
+  cooldown: 6
+  mana: 20
+  skills:
+  - damage: "6 + <caster.level> * 0.2"
+    target: { line: { length: 12, width: 1.5 } }
+  - beam: { particle: END_ROD, step: 0.3 }
+    target: { targetLocation: { range: 12 } }
+  - sound: { sound: item.trident.throw }
+
+
+# Example "stand close to dodge" shockwave with the ring targeter.
+OuterRing:
+  description: "<gray>Hits enemies 3-7 blocks away; the close ones are safe."
+  cooldown: 8
+  mana: 20
+  skills:
+  - damage: 8
+    target: { ring: { inner: 3, outer: 7 } }
+  - circle: { particle: SOUL_FIRE_FLAME, radius: 5, points: 40 }
+    target: casterLocation

@@ -1,0 +1,31 @@
+# =====================================================================
+#  Frost Lord — one boss, one file. Copy this file to make another boss
+#  (bosses/<name>.yml), and put its skills in skills/bosses/<name>.yml.
+#  Spawn with: /cr boss spawn FrostLord
+#  Full field reference: bosses.yml
+# =====================================================================
+
+FrostLord:
+  type: STRAY
+  name: "<gradient:#7dd3fc:#3b82f6><bold>Frost Lord</bold></gradient>"
+  health: 400
+  damage: 9
+  bossbar: { color: BLUE, style: NOTCHED_10, radius: 48 }
+  skills:
+    on-spawn: [FrostLord_Intro]
+    timer:
+    - { every: 160, skill: FrostLord_Nova }      # every 8 s
+    - { every: 100, skill: FrostLord_Lance }     # every 5 s
+    on-damaged:
+    - { skill: FrostLord_Blink, chance: 0.08 }
+    phases:
+    - { below: 60%, skill: FrostLord_Minions }
+    - { below: 30%, skill: FrostLord_Enrage }
+    on-death: [FrostLord_Shatter]
+  # What it drops and how much XP the killer gets (same fields as drops.yml).
+  loot:
+    xp: 500
+    drops:
+    - { gem: FrostGem, chance: 1.0 }
+    - { gem: SmiteGem, chance: 0.35 }
+    - { shardvoid: 2, chance: 0.5 }

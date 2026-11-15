@@ -1,0 +1,121 @@
+# =====================================================================
+#  CelestiRift example skills
+#  Format (per line):  mechanic{attrs} @targeter{attrs} ?condition ~trigger
+#  Reload with:        /cr reload
+#  Test with:          /cr cast <SkillName>   or   /cr give <SkillName>
+# =====================================================================
+
+Fireball:
+  Cooldown: 3
+  Mana: 20
+  # Per-skill override of the skill-item gradient (falls back to config.yml).
+  Item:
+    name-gradient:
+      from: "#ff5f6d"   # red
+      to:   "#ffc371"   # orange
+    mana-gradient:
+      from: "#f83600"
+      to:   "#fe8c00"
+  Skills:
+  - message{msg="<gold>You unleash a <bold>Fireball</bold>!"} @self
+  - sound{sound=entity.blaze.shoot;pitch=1.2} @self
+  - projectile{type=FIREBALL;velocity=1.8} @self
+
+Heal:
+  Cooldown: 8
+  Mana: 35
+  Skills:
+  - heal{amount="6 + <caster.level> * 0.2"} @self
+  - heal{amount="6 + <caster.level> * 0.2"} @NearbyEntities{radius=8;filter=allies;sort=lowesthp;limit=2}
+  - particle{type=HEART;amount=20;spread=0.6} @self
+  - sound{sound=entity.player.levelup;pitch=1.5} @self
+  - message{msg="<green>You feel restored. (<caster.hp> HP)"} @self
+
+FrostNova:
+  Cooldown: 10
+  Mana: 40
+  Skills:
+  - particle{type=SNOWFLAKE;amount=60;spread=2;speed=0.05} @casterLocation
+  - sound{sound=block.glass.break} @self
+  - damage{amount="4 + <caster.level> * 0.25"} @NearbyEntities{radius=5}
+  - potion{type=SLOWNESS;duration=100;level=3} @NearbyEntities{radius=5}
+  - push{velocity=0.8;mode=away;y=0.3} @NearbyEntities{radius=5}
+
+Smite:
+  Cooldown: 6
+  Mana: 15
+  Skills:
+  - lightning{damage=true} @target{range=30}
+  - message{msg="<yellow>Smite strikes <target.name>!"} @self
+
+BladeCombo:
+  Cooldown: 5
+  Skills:
+  # A timeline: three hits spaced out using delay (20 ticks = 1 second).
+  - damage{amount=3} @target
+  - particle{type=CRIT;amount=15} @target
+  - delay{ticks=10}
+  - damage{amount=3} @target
+  - particle{type=CRIT;amount=15} @target
+  - delay{ticks=10}
+  - damage{amount=6} @target
+  - sound{sound=entity.player.attack.crit} @self
+
+BlinkStrike:
+  Cooldown: 7
+  Skills:
+  - particle{type=PORTAL;amount=40} @self
+  - teleport @targetLocation{range=20}
+  - sound{sound=entity.enderman.teleport} @self
+  - message{msg="<light_purple>Blink!"} @self
+
+Leap:
+  Cooldown: 4
+  Mana: 10
+  Skills:
+  - leap{forward=1.6;up=0.9} @self
+  - sound{sound=entity.rabbit.jump} @self
+
+# Flight for 15 seconds (300 ticks), with a kick off the ground to start.
+# Slow Falling is granted automatically if it runs out mid-air (safeLand=true).
+Levitate:
+  Cooldown: 30
+  Mana: 50
+  Skills:
+  - fly{duration=300;speed=0.15;launch=0.6} @self
+  - particle{type=END_ROD;amount=40;spread=0.8} @self
+  - sound{sound=item.elytra.flying;pitch=1.4} @self
+  - message{msg="<aqua>You take flight! <gray>(15s)"} @self
+
+# Three baby zombie minions that despawn after 30s and open on your target.
+# They can't hit you — summons are tagged with their owner.
+RaiseDead:
+  Cooldown: 25
+  Mana: 45
+  Skills:
+  - summon{type=ZOMBIE;amount=3;radius=2.5;duration=600;health=20;baby=true;name="<dark_red>Risen Minion"} @casterLocation
+  - particle{type=SOUL;amount=50;spread=2} @casterLocation
+  - sound{sound=entity.zombie_villager.converted;pitch=0.6} @self
+  - message{msg="<dark_red>The dead answer your call."} @self
+
+# Snatch whatever your target is holding straight into your inventory.
+Pickpocket:
+  Cooldown: 12
+  Mana: 25
+  Skills:
+  - stealitem{slot=hand;amount=1} @target{range=6}
+  - particle{type=SMOKE;amount=15} @target{range=6}
+  - sound{sound=entity.item.pickup;pitch=1.6} @self
+  - message{msg="<yellow>You lift an item from <target.name>."} @self
+
+# A meta-skill: composes other skills, gated by a SKILL-LEVEL condition.
+# If the caster is above 10 HP the skill will not cast at all — no cooldown or
+# mana is spent, and the player is told they can't cast it right now.
+Desperation:
+  Cooldown: 30
+  Conditions:
+  - health{value=<10}      # only castable below 10 HP (use ?! or ! to negate)
+  Skills:
+  - skill{s=Heal} @self
+  - skill{s=FrostNova} @self
+  - message{msg="<red>Desperation activates!"} @self

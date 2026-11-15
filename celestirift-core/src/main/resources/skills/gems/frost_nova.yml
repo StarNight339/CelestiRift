@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Frost Gem (gems.yml) - freeze everything around you in a ring of ice.
+
+FrostNova:
+  description: "<gray>A ring of frost bursts out, freezing, slowing and repelling enemies."
+  cooldown: 10
+  mana: 40
+  skills:
+  - shockwave: { particle: SNOWFLAKE, startradius: 0.5, maxradius: 6, speed: 0.6, density: 2 }
+    target: casterLocation
+  - shockwave: { particle: DUST_COLOR_TRANSITION, color: "#38bdf8", tocolor: "#e0f2fe", size: 1.6, startradius: 0.5, maxradius: 6, speed: 0.6, density: 1.2 }
+    target: casterLocation
+  - star: { particle: DUST, color: "#bae6fd", size: 1.1, spikes: 6, radius: 2.5, innerratio: 0.35, peredge: 6 }
+    target: casterLocation
+  - display: { type: block, material: PACKED_ICE, scale: 0.1, endscale: 0.9, tilt: 20, duration: 10 }
+    target: { nearby: { radius: 6, limit: 8 } }
+  - damage: "4 + <caster.level> * 0.25"
+    target: { nearby: 6 }
+  - potion: { type: SLOWNESS, duration: 100, level: 3 }
+    target: { nearby: 6 }
+  - push: { velocity: 0.8, mode: away, y: 0.3 }
+    target: { nearby: 6 }
+  - sound: { sound: block.glass.break, pitch: 0.7 }
+  - sound: { sound: block.amethyst_block.resonate, pitch: 1.6 }

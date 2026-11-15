@@ -1,0 +1,15 @@
+# =====================================================================
+#  CelestiRift fusions - field reference (recipes may also be written right here)
+#
+#  Recipes live in plugins/CelestiRift/fusions/<result>.yml, one per file.
+#  Players fuse in the socket menu (/cr socket) -> Fusion tab: every recipe is
+#  listed with its ingredients (✔ have / ✘ missing); click one to consume the
+#  ingredients from the inventory and socket the result into the weapon.
+#
+#  <RecipeId>:
+#    ingredients  gem ids (2+), one of each is consumed           (required)
+#    result-gem   a gem id to socket (custom name/look/lore)      (this OR skill)
+#    skill        an auto gem for this skill instead
+#    trigger      (skill only) activation trigger, default RIGHT_CLICK
+#    tier         (skill only) 1-5, default 5
+# =====================================================================

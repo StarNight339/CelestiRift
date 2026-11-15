@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Reusable skills: templates (extends) and variables
+#
+#  extends: <Skill>   copy every key you don't set yourself from another skill
+#  variables:         values you can drop into any line as ${name}
+#                     (a child's variables override its parent's)
+#
+#  Build one "template" skill, then make variants that only change numbers.
+# =====================================================================
+
+# A template bolt. It works on its own, but it's meant to be extended.
+ArcaneBolt:
+  description: "<gray>A bolt of raw magic."
+  cooldown: 2
+  mana: 10
+  variables:
+    color: "#a855f7"
+    damage: 4
+    range: 20
+  skills:
+  - line: { particle: DUST, color: "${color}", step: 0.3 }
+    target: { targetLocation: "${range}" }
+  - damage: "${damage}"
+    target: { target: "${range}" }
+  - sound: { sound: entity.illusioner.cast_spell, pitch: 1.4 }
+
+# Same skill, hotter colour and more damage — only the differences are written.
+FireBolt:
+  extends: ArcaneBolt
+  description: "<gray>A bolt that sets the target ablaze."
+  variables:
+    color: "#ff5f1f"
+    damage: 6
+  # Extra lines? Write the full list — 'skills' is replaced, not merged.
+  skills:
+  - line: { particle: DUST, color: "${color}", step: 0.3 }
+    target: { targetLocation: "${range}" }
+  - damage: "${damage}"
+    target: { target: "${range}" }
+  - ignite: 60
+    target: { target: "${range}" }
+    chance: 0.5                     # 50% chance to set on fire
+  - sound: { sound: entity.blaze.shoot, pitch: 1.2 }
+
+# Variants can stack: this one extends FireBolt and only changes the range.
+SniperBolt:
+  extends: FireBolt
+  cooldown: 6
+  variables:
+    range: 45
+
+# Line conditions: 'if' takes a list; every entry must pass.
+Execute:
+  description: "<gray>Finish off a weakened foe."
+  cooldown: 12
+  mana: 30
+  skills:
+  - damage: { amount: 20, ignorearmor: true }
+    target: { target: 6 }
+    if:
+    - health: "<30"                 # health of the target
+  - message: "<red>Execute!"

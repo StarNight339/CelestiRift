@@ -1,0 +1,11 @@
+.gradle/
+build/
+target/
+run/
+backup/
+*.iml
+.idea/
+.vscode/
+
+# Personal Claude Code settings
+.claude/settings.local.json

@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Cast times and telegraphs.
+#
+#  cast-time: 30                 ticks of casting before the skill fires (20 = 1 s).
+#                                A progress bar shows on the action bar; cooldown and
+#                                mana are only spent when the cast completes.
+#  cast-interrupt: [move, damage]  what cancels it (default both; [] or none = nothing)
+#
+#  - telegraph: { skill: X, radius: 5, duration: 30, color: "#ff3030", inner: 0 }
+#    Draws a warning circle that fills up, then casts X with the circle as origin
+#    (so nearby/ring inside X are measured from the circle). Use it for bosses so
+#    players can dodge, or for player skills with a delay.
+#
+#  Skill items (/cr give) show the vanilla cooldown sweep on the hotbar.
+# =====================================================================
+
+Pyroblast:
+  description: "<gray>Channel 1.5 s (stand still), then launch a huge fireball."
+  cooldown: 8
+  mana: 40
+  cast-time: 30
+  cast-interrupt: [move, damage]
+  skills:
+  - projectile: { type: FIREBALL, velocity: 2.2 }
+  - sound: { sound: entity.blaze.shoot, pitch: 0.6 }
+
+MeteorStrike:
+  description: "<gray>Mark a spot; 1 s later a meteor hits everything inside."
+  cooldown: 10
+  mana: 35
+  skills:
+  - telegraph: { skill: MeteorStrike_Impact, radius: 4, duration: 20, color: "#ff7a1a" }
+    target: { targetLocation: { range: 25 } }
+
+MeteorStrike_Impact:
+  skills:
+  - lightning: { damage: false }
+    target: origin
+  - damage: "8 + <caster.level> * 0.3"
+    target: { nearby: 4 }
+  - ignite: 60
+    target: { nearby: 4 }
+  - particle: { type: EXPLOSION, amount: 4, spread: 1.5 }
+    target: origin
+
+HealingCircle:
+  description: "<gray>Channel 1 s (you may move), then heal allies in a circle at your feet."
+  cooldown: 12
+  mana: 30
+  cast-time: 20
+  cast-interrupt: [damage]
+  skills:
+  - telegraph: { skill: HealingCircle_Pulse, radius: 5, duration: 10, color: "#5cff7a" }
+    target: casterLocation
+
+HealingCircle_Pulse:
+  skills:
+  - heal: "4 + <caster.level> * 0.2"
+    target: { nearby: { radius: 5, filter: allies } }
+  - heal: "4 + <caster.level> * 0.2"
+  - particle: { type: HAPPY_VILLAGER, amount: 25, spread: 2 }
+    target: origin

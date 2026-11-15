@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Mending Gem (gems.yml) - a spiral of light heals you and the two most hurt allies.
+
+Heal:
+  description: "<gray>Restore health to you and the two most hurt allies nearby."
+  cooldown: 8
+  mana: 35
+  skills:
+  - helix: { particle: DUST_COLOR_TRANSITION, color: "#22c55e", tocolor: "#fde047", size: 1.2, radius: 0.9, height: 2.4, coils: 3, points: 60, strands: 2 }
+    target: casterLocation
+  - heal: "6 + <caster.level> * 0.2"
+  - heal: "6 + <caster.level> * 0.2"
+    target: { nearby: { radius: 8, filter: allies, sort: lowesthp, limit: 2 } }
+  - particle: { type: HEART, amount: 4, spread: 0.5 }
+    target: { nearby: { radius: 8, filter: allies, sort: lowesthp, limit: 2 } }
+  - particle: { type: HEART, amount: 6, spread: 0.6 }
+  - skill: Fx_NatureBloom
+  - sound: { sound: entity.player.levelup, pitch: 1.6 }

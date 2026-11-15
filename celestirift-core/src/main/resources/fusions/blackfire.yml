@@ -1,0 +1,5 @@
+# Ember Gem + Dark Gem -> Blackfire Gem. Field reference: fusions.yml
+
+Blackfire:
+  ingredients: [EmberGem, DarkGem]
+  result-gem: BlackfireGem

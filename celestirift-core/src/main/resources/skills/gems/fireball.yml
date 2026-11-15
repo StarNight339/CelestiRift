@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Ember Gem (gems.yml) - a blazing orb that explodes on whatever it touches.
+
+Fireball:
+  description: "<gray>Hurl a blazing orb that explodes on impact, burning everything nearby."
+  cooldown: 3
+  mana: 20
+  item:
+    name-gradient: { from: "#ff5f6d", to: "#ffc371" }
+    mana-gradient: { from: "#f83600", to: "#fe8c00" }
+  skills:
+  - projectiletrail: { particle: DUST_COLOR_TRANSITION, color: "#ff3d00", tocolor: "#ffb300", size: 1.6, speed: 1.1, maxdistance: 32, shape: helix, shaperadius: 0.3, shapepoints: 2, coilspeed: 1.8, hitradius: 1.2, onhit: Fireball_Impact }
+  - particle: { type: FLAME, amount: 12, spread: 0.3, speed: 0.05 }
+  - sound: { sound: entity.blaze.shoot, pitch: 0.9 }
+  - sound: { sound: item.firecharge.use, volume: 0.6, pitch: 1.2 }
+
+Fireball_Impact:
+  skills:
+  - damage: "6 + <caster.level> * 0.3"
+    target: { nearby: 3 }
+  - ignite: 60
+    target: { nearby: 3 }
+  - skill: Fx_FireBurst

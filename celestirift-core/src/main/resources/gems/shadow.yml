@@ -1,0 +1,11 @@
+# Shadow gems - palette #4c1d95 -> #0f0a1a. Field reference: gems.yml
+# Ember Gem + Dark Gem fuse into Blackfire (fusions.yml).
+
+DarkGem:
+  skill: ShadowBolt
+  tier: 4
+  trigger: RIGHT_CLICK
+  material: COAL
+  name: "<gradient:#7c3aed:#1e1b4b><bold>Dark Gem</bold></gradient>"
+  lore:
+  - "It whispers when no one is listening."

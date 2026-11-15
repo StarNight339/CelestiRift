@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  CLERIC - support.  Palette: holy #fde047 -> #fffbeb, nature #22c55e
+#  Heals pick the most hurt allies; Judgement hits harder the lower the target.
+#
+#   Lv 1   HolyBolt     a lance of light; heals you a little on hit
+#   Lv 5   Renew        healing over time on the 2 most hurt allies (or you)
+#   Lv 10  Sanctuary    1 s cast; a holy circle heals, cleanses and shields allies
+#   Lv 20  Judgement    8 + 15% of the target's missing health
+#   Passive  every 5 s -> Blessing
+# =====================================================================
+
+HolyBolt:
+  description: "<gray>A lance of light. Heals you for 2 + 0.1 per level on hit."
+  cooldown: 1.5
+  mana: 10
+  conditions: [ { class: Cleric } ]
+  skills:
+  - projectiletrail: { particle: DUST_COLOR_TRANSITION, color: "#fde047", tocolor: "#fffbeb", size: 1.2, speed: 1.35, maxdistance: 28, shape: ring, shaperadius: 0.25, shapepoints: 6, hitradius: 1, damage: "3 + <caster.level> * 0.2", onhit: HolyBolt_Hit }
+  - sound: { sound: block.amethyst_block.chime, pitch: 1.6 }
+
+HolyBolt_Hit:
+  skills:
+  - heal: "2 + <caster.level> * 0.1"
+  - skill: Fx_HolyBurst
+
+Renew:
+  description: "<gray>Heal the 2 most hurt allies over 8 s (you, if nobody is hurt)."
+  cooldown: 8
+  mana: 25
+  conditions: [ { class: Cleric }, { level: 5 } ]
+  skills:
+  - aura: { id: Renew, duration: 160, interval: 20, ontick: Renew_Tick, particle: HAPPY_VILLAGER }
+    target: { nearby: { radius: 12, filter: allies, sort: lowesthp, limit: 2 } }
+  - aura: { id: Renew, duration: 160, interval: 20, ontick: Renew_Tick, particle: HAPPY_VILLAGER }
+    if: [ { hasaura: { id: Renew, stacks: "<1" } } ]
+  - sound: { sound: block.amethyst_block.resonate, pitch: 1.4 }
+
+Renew_Tick:
+  skills:
+  - heal: "1.5 + <caster.level> * 0.08"
+    target: trigger
+  - helix: { particle: DUST, color: "#86efac", size: 0.9, radius: 0.6, height: 2, coils: 1, points: 14, strands: 1 }
+    target: trigger
+
+Sanctuary:
+  description: "<gray>Cast 1 s, then a holy circle heals, cleanses and shields allies inside."
+  cooldown: 25
+  mana: 45
+  cast-time: 20
+  cast-interrupt: [damage]
+  conditions: [ { class: Cleric }, { level: 10 } ]
+  skills:
+  - telegraph: { skill: Sanctuary_Pulse, radius: 6, duration: 10, color: "#ffe680" }
+    target: casterLocation
+
+Sanctuary_Pulse:
+  skills:
+  - star: { particle: DUST, color: "#fde047", size: 1.4, spikes: 8, radius: 6, innerratio: 0.6, peredge: 6 }
+    target: origin
+  - circle: { particle: END_ROD, radius: 6, points: 60 }
+    target: origin
+  - heal: "6 + <caster.level> * 0.3"
+  - removeaura: { type: debuff }
+  - aura: { id: Sanctuary, duration: 120, shield: "4 + <caster.level> * 0.2", particle: END_ROD }
+  - heal: "6 + <caster.level> * 0.3"
+    target: { nearby: { radius: 6, filter: allies } }
+  - removeaura: { type: debuff }
+    target: { nearby: { radius: 6, filter: allies } }
+  - aura: { id: Sanctuary, duration: 120, shield: "4 + <caster.level> * 0.2", particle: END_ROD }
+    target: { nearby: { radius: 6, filter: allies } }
+  - display: { type: block, material: GOLD_BLOCK, scale: 0.4, endscale: 0.05, y: 2.5, spin: 20, duration: 20, glow: true, glowcolor: "#fde047" }
+    target: origin
+  - sound: { sound: block.beacon.power_select, pitch: 1.6 }
+
+Judgement:
+  description: "<gray>Strike an enemy for 8 + 15% of its missing health."
+  cooldown: 15
+  mana: 35
+  conditions: [ { class: Cleric }, { level: 20 } ]
+  skills:
+  - display: { type: item, material: GOLDEN_SWORD, scale: 2.2, tilt: 135, y: 5, rise: -4.2, duration: 10, glow: true, glowcolor: "#fde047" }
+    target: { target: 25 }
+  - delay: 10
+  - lightning: { damage: false }
+    target: { target: 25 }
+  - damage: "8 + (<target.mhp> - <target.hp>) * 0.15 + <caster.level> * 0.3"
+    target: { target: 25 }
+  - star: { particle: DUST, color: "#fde047", size: 1.3, spikes: 5, radius: 2, innerratio: 0.4, peredge: 8 }
+    target: { target: 25 }
+  - display: { type: text, text: "<gradient:#fde047:#fffbeb><bold>JUDGED", y: 2.4, rise: 0.6, duration: 25 }
+    target: { target: 25 }
+
+# --- Passive (classes.yml: timer every 5 s) -------------------------------------
+Blessing:
+  skills:
+  - heal: "1 + <caster.level> * 0.05"
+  - heal: "1 + <caster.level> * 0.05"
+    target: { nearby: { radius: 6, filter: allies } }
+  - circle: { particle: DUST, color: "#fde047", size: 0.8, radius: 0.9, points: 16 }
+    target: casterLocation

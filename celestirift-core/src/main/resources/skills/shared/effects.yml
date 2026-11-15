@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Shared impact effects (visual + sound only, no damage).
+#  Call from any helper:   - skill: Fx_FireBurst
+#  They draw at the skill's origin: the impact point for onhit/onland/onend
+#  helpers, the caster for a normal cast.
+# =====================================================================
+
+Fx_FireBurst:
+  skills:
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#ff3d00", tocolor: "#ffb300", size: 1.6, radius: 1.3, points: 70 }
+    target: origin
+  - shockwave: { particle: FLAME, startradius: 0.4, maxradius: 3.2, speed: 0.55, density: 2 }
+    target: origin
+  - particle: { type: LAVA, amount: 8, spread: 0.6 }
+    target: origin
+  - particle: { type: LARGE_SMOKE, amount: 10, spread: 0.7, speed: 0.02 }
+    target: origin
+  - sound: { sound: entity.generic.explode, volume: 0.7, pitch: 1.3 }
+    target: origin
+  - sound: { sound: item.firecharge.use, pitch: 0.8 }
+    target: origin
+
+Fx_FrostBurst:
+  skills:
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#38bdf8", tocolor: "#e0f2fe", size: 1.4, radius: 1.2, points: 60 }
+    target: origin
+  - shockwave: { particle: SNOWFLAKE, startradius: 0.3, maxradius: 2.8, speed: 0.45, density: 2 }
+    target: origin
+  - particle: { type: ITEM_SNOWBALL, amount: 14, spread: 0.5 }
+    target: origin
+  - sound: { sound: block.glass.break, pitch: 1.4 }
+    target: origin
+  - sound: { sound: block.amethyst_block.resonate, pitch: 1.8 }
+    target: origin
+
+Fx_ArcaneBurst:
+  skills:
+  - star: { particle: DUST, color: "#c084fc", size: 1.2, spikes: 5, radius: 1.6, innerratio: 0.45, peredge: 6 }
+    target: origin
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#a855f7", tocolor: "#f0abfc", size: 1.2, radius: 1, points: 40 }
+    target: origin
+  - particle: { type: ENCHANT, amount: 30, spread: 0.8, speed: 0.6 }
+    target: origin
+  - sound: { sound: entity.illusioner.cast_spell, pitch: 1.6 }
+    target: origin
+
+Fx_HolyBurst:
+  skills:
+  - circle: { particle: DUST_COLOR_TRANSITION, color: "#fde047", tocolor: "#fffbeb", size: 1.5, radius: 1.6, points: 48 }
+    target: origin
+  - helix: { particle: END_ROD, radius: 0.8, height: 2.2, coils: 2, points: 30, strands: 2 }
+    target: origin
+  - particle: { type: GLOW, amount: 12, spread: 0.6 }
+    target: origin
+  - sound: { sound: block.amethyst_block.chime, pitch: 1.5 }
+    target: origin
+  - sound: { sound: block.beacon.power_select, volume: 0.5, pitch: 2 }
+    target: origin
+
+Fx_BloodBurst:
+  skills:
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#b91c1c", tocolor: "#f97316", size: 1.3, radius: 0.9, points: 36 }
+    target: origin
+  - particle: { type: DAMAGE_INDICATOR, amount: 6, spread: 0.4, speed: 0.2 }
+    target: origin
+  - particle: { type: CRIT, amount: 18, spread: 0.5, speed: 0.4 }
+    target: origin
+  - sound: { sound: entity.player.attack.crit, pitch: 0.8 }
+    target: origin
+
+Fx_ShadowBurst:
+  skills:
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#4c1d95", tocolor: "#0f0a1a", size: 1.8, radius: 1.5, points: 70 }
+    target: origin
+  - shockwave: { particle: SOUL_FIRE_FLAME, startradius: 0.3, maxradius: 3, speed: 0.5, density: 1.5 }
+    target: origin
+  - particle: { type: SQUID_INK, amount: 20, spread: 0.6, speed: 0.05 }
+    target: origin
+  - sound: { sound: entity.wither.shoot, volume: 0.6, pitch: 0.7 }
+    target: origin
+
+Fx_StormBurst:
+  skills:
+  - shockwave: { particle: DUST_COLOR_TRANSITION, color: "#60a5fa", tocolor: "#e0e7ff", size: 1.2, startradius: 0.2, maxradius: 2.4, speed: 0.6, density: 2 }
+    target: origin
+  - particle: { type: ELECTRIC_SPARK, amount: 24, spread: 0.5, speed: 0.3 }
+    target: origin
+  - sound: { sound: entity.lightning_bolt.impact, volume: 0.6, pitch: 1.7 }
+    target: origin
+
+Fx_NatureBloom:
+  skills:
+  - circle: { particle: DUST_COLOR_TRANSITION, color: "#22c55e", tocolor: "#bbf7d0", size: 1.3, radius: 1.4, points: 40 }
+    target: origin
+  - particle: { type: HAPPY_VILLAGER, amount: 14, spread: 0.7 }
+    target: origin
+  - particle: { type: CHERRY_LEAVES, amount: 10, spread: 0.8 }
+    target: origin
+  - sound: { sound: block.azalea_leaves.place, pitch: 1.2 }
+    target: origin

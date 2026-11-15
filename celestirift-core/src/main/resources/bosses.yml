@@ -1,0 +1,34 @@
+# =====================================================================
+#  CelestiRift bosses
+#
+#  Put each boss in its own file:   plugins/CelestiRift/bosses/<name>.yml
+#  (sub-folders and .yaml work too, e.g. bosses/ice/frost_lord.yaml).
+#  Bosses may also be written right here. Example: bosses/frost_lord.yml
+#
+#  Spawn with /cr boss spawn <id> [player].  /cr validate checks them.
+#  Boss skills are normal skills (put them in skills/bosses/<name>.yml) that
+#  run AS the boss: @self = the boss, @target = what it is fighting,
+#  @trigger = the attacker (on-damaged/phases) or killer (on-death).
+#
+#  <BossId>:
+#    type        mob type (any living, spawnable entity)
+#    name        MiniMessage name (also the boss bar title)
+#    health      max health
+#    damage      (optional) melee attack damage
+#    glowing     true/false
+#    bossbar     { color: RED|BLUE|GREEN|PINK|PURPLE|WHITE|YELLOW,
+#                  style: PROGRESS|NOTCHED_6|NOTCHED_10|NOTCHED_12|NOTCHED_20,
+#                  radius: 48 }     shown to players within radius blocks
+#    skills:
+#      on-spawn:   [Skill, ...]
+#      timer:      - { every: <ticks>, skill: Skill }   (20 ticks = 1 s)
+#      on-damaged: - { skill: Skill, chance: 0.2 }
+#      phases:     - { below: 50%, skill: Skill }       once, when health drops below
+#      on-death:   [Skill, ...]
+#    loot:                          same fields as a drops.yml table
+#      xp: 500
+#      looting-bonus: 0.01
+#      drops:
+#      - { gem: FrostGem, chance: 1.0 }
+#      - { shardvoid: 2, chance: 0.5 }
+# =====================================================================

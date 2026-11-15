@@ -1,0 +1,176 @@
+# CelestiRift configuration
+# Skills live in the /skills folder next to this file. Edit skills or this file
+# and run /cr reload in-game to apply changes without restarting.
+
+# ---------------------------------------------------------------------------
+# Combat safety: who skills may hurt
+# ---------------------------------------------------------------------------
+# Area skills (nearby, projectile hits, blackhole, tornado) only hit ENEMIES by default:
+# hostile mobs, mobs fighting you and, when pvp is on, other players and their pets.
+# Armor stands, NPCs, creative players and your own pets/summons are never hit.
+# Damage goes through normal damage events, so WorldGuard "pvp deny" regions and claim
+# plugins still block it.
+combat:
+  pvp: true             # false = skills never hurt players or their pets
+  pvp-multiplier: 1.0   # skill damage between players x this (e.g. 0.5 = half)
+  low-health: 0.3       # LOW_HEALTH trigger fires when health drops below this fraction
+
+vfx:
+  damage-numbers: true  # floating damage/heal numbers (players' hits, bosses, training dummies)
+
+settings:
+  debug: false   # true = log every cast result and full stack traces of failing skill lines
+
+# ---------------------------------------------------------------------------
+# Skill item appearance (given via /cr give)
+# ---------------------------------------------------------------------------
+# Name and mana lore are rendered with MiniMessage <gradient> tags. Set the two
+# hex endpoints for each gradient. Any MiniMessage colour works.
+items:
+  name-gradient:
+    from: "#b06ab3"   # purple
+    to:   "#4568dc"   # blue
+  mana-gradient:
+    from: "#00c6ff"   # cyan
+    to:   "#0072ff"   # deep blue
+
+# ---------------------------------------------------------------------------
+# Mana system
+# ---------------------------------------------------------------------------
+# Skills declare a cost with "Mana: <n>" in their skill file. A cast is blocked
+# if the player lacks the mana. Mana regenerates every second up to "max".
+mana:
+  enabled: true
+  max: 100.0
+  regen-per-second: 5.0
+  show-actionbar: true   # show "Mana: x/y" on the action bar after casting/regen
+
+# ---------------------------------------------------------------------------
+# Skill Gems & sockets
+# ---------------------------------------------------------------------------
+# Skills are delivered as Skill Gems: give one with
+#   /cr gem <skill> [tier 1-5] [trigger] [player]
+# then socket it into a weapon with /cr socket (a menu opens). While the weapon
+# is held, its socketed skills fire on their trigger. Re-bind a socket's trigger
+# later with /cr item settrigger <skill> <trigger>.
+gems:
+  material: AMETHYST_SHARD    # default item type used for gems
+  shardvoid-material: ECHO_SHARD  # item type used for Shardvoid upgrade items
+  default-slots: 1           # sockets a weapon starts with
+  max-slots: 6               # max sockets after Shardvoid upgrades (1..6)
+  # Optional per-tier name/lore gradient overrides (else sensible defaults):
+  # tiers:
+  #   5: { from: "#f59e0b", to: "#f97316" }
+
+# ---------------------------------------------------------------------------
+# Resource pack (custom item models & tooltips)
+# ---------------------------------------------------------------------------
+# CelestiRift ships a resource pack with models for gems (per tier), runes,
+# Shardvoid and skill items, plus a "legendary" tooltip frame. On every start
+# it is written to plugins/CelestiRift/pack/CelestiRift-pack.zip.
+#
+#  1. Upload that zip somewhere players can download it directly (GitHub
+#     release, mc-packs.net, your web host...) - or merge its "assets" folder
+#     into your server's own pack.
+#  2. Put the URL below (the SHA-1 is filled in automatically for the bundled
+#     zip; set "hash" yourself if you upload a modified pack).
+#  3. Set enabled: true and /cr reload.
+#
+# Leave enabled: false until players actually get the pack - otherwise they
+# would see missing (purple/black) item textures.
+resource-pack:
+  enabled: false
+  # With OrionRP installed: register the CelestiRift pack with OrionRP, which merges it into
+  # the server pack and sends it. Models are then enabled automatically and send.* is unused.
+  use-orionrp: true
+  send:
+    url: ""             # direct .zip download URL; empty = don't send (e.g. merged pack)
+    hash: ""            # SHA-1 of the zip; empty = use the bundled pack's hash
+    required: false     # true = players who decline are disconnected
+    prompt: "<light_purple>CelestiRift uses a resource pack for gem and skill item visuals."
+  # Default looks while enabled. A gem's or skill's own "model:" always wins.
+  # {tier} is replaced with 1-5.
+  models:
+    gem: "celestirift:gem_tier_{tier}"
+    rune: "celestirift:rune"
+    shardvoid: "celestirift:shardvoid"
+    skill-item: "celestirift:skill_scroll"
+  # Per-gem looks (gems.yml id -> any item model, e.g. from OrionRP's assets folder).
+  # Only used while the pack is on, so players without it never see missing textures.
+  #   gem-models:
+  #     EmberGem: "items:item559"
+  gem-models: {}
+  # Gem look per tier, overriding models.gem (e.g. art from OrionRP's assets):
+  #   tier-models: { 1: "items:item547", 5: "items:item554" }
+  tier-models: {}
+  # Tooltip style per gem tier (sprite in the pack). Remove a line to use vanilla.
+  tooltip-styles:
+    5: "celestirift:legendary"
+
+# ---------------------------------------------------------------------------
+# OrionRP (optional) - only used when the OrionRP plugin is installed
+# ---------------------------------------------------------------------------
+# Always on with OrionRP (nothing to set):
+#   - <glyph:name> in messages.yml, gems, skill messages/descriptions, summon names,
+#     display text (images from OrionRP's textures/glyph/<name>.png)
+#   - drops.yml: - { item: demo:ruby, amount: 2, chance: 0.1 }   (an OrionRP custom item)
+#   - skill mechanic: - giveitem{item=demo:ruby;amount=1} @self
+#   - display mechanic: type: item with item: demo:ruby, and type: sprite (glyph images, animated
+#     with frames: "a,b,c") for textured effects
+#   - OrionRP items/furniture/blocks/GUI buttons can cast skills: actions: ["skill FireBall"]
+orionrp:
+  # Background images for CelestiRift's menus: an OrionRP GUI background id, i.e.
+  # textures/gui/<name>.png in any pack source (176x222 covers the 6-row menus). Empty = plain.
+  gui-backgrounds:
+    gem-library: ""     # e.g. "celestirift:gem_library"
+    socket: ""
+    trigger: ""
+  # Action bar through OrionRP's HUD: cast messages and the mana bar no longer overwrite
+  # each other or other plugins' HUD layers.
+  hud:
+    enabled: true
+    message-ticks: 40   # how long cast messages (cooldown, no mana...) stay
+    # Mana as a bar of icons when these OrionRP glyphs exist (textures/glyph/<name>.png);
+    # otherwise mana.actionbar text from messages.yml. Give the icons their own ascent in
+    # OrionRP's glyphs.yml to draw the bar above/below the message line.
+    mana-glyphs:
+      full: "mana_full"
+      half: "mana_half"
+      empty: "mana_empty"
+    mana-icons: 10
+    # mana-x: -91       # pixels from the screen center to the bar's left edge; default centered
+
+# ---------------------------------------------------------------------------
+# Levels & classes (RPG)
+# ---------------------------------------------------------------------------
+# Players earn CelestiRift XP from skill casts and kills (drops.yml). Classes
+# (classes.yml) scale max mana and regen with level. /class, /profile for
+# players; /cr level|xp|class for admins.
+leveling:
+  enabled: true
+  max-level: 50
+  # XP to go from level L to L+1 = base * L^exponent  (100, 1.5: L1=100, L10=3162)
+  xp-curve: { base: 100, exponent: 1.5 }
+  xp:
+    skill-cast: 1          # per successful cast (0 = off)
+  level-up:
+    restore-mana: true
+    sound: "ui.toast.challenge_complete"
+
+classes:
+  allow-change: false      # true = players can /class choose again
+
+# ---------------------------------------------------------------------------
+# Global trigger bindings (LEGACY / optional)
+# ---------------------------------------------------------------------------
+# The gem/socket system above replaces these for normal play, so this is empty
+# by default. You can still bind a skill to an event for ALL players here:
+#   triggers:
+#     SWAP_HANDS:
+#       - skill: Fireball
+#         permission: celestirift.use
+#         cancel: true
+#         require-item: true
+# Triggers: SNEAK, UNSNEAK, LEFT_CLICK, RIGHT_CLICK, SWAP_HANDS (F),
+#           DROP_ITEM (Q), ATTACK (@trigger=victim), DAMAGED (@trigger=attacker), JOIN
+triggers: {}

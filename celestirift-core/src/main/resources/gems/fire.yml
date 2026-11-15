@@ -1,0 +1,19 @@
+# Fire gems - palette #ff3d00 -> #ffb300. Field reference: gems.yml
+
+EmberGem:
+  skill: Fireball
+  tier: 3
+  trigger: RIGHT_CLICK
+  material: BLAZE_POWDER
+  name: "<gradient:#ff3d00:#ffb300><bold>Ember Gem</bold></gradient>"
+  lore:
+  - "Forged in dragonfire, still warm to the touch."
+
+StarfallGem:
+  skill: Starfall
+  tier: 5
+  trigger: RIGHT_CLICK
+  material: NETHER_STAR
+  name: "<gradient:#fde047:#ff7a1a:#fde047><bold>Starfall Gem</bold></gradient>"
+  lore:
+  - "A shard of a star that refused to stop falling."

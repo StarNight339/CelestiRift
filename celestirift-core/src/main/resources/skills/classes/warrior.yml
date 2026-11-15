@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  WARRIOR - melee pressure.  Palette: blood #b91c1c -> #f97316, steel #e5e7eb
+#  Loop: Rend bleeds everything in front; crits Cleave; kills feed Bloodlust.
+#
+#   Lv 1   Charge       leap forward, then slam a cone in front
+#   Lv 5   Whirlwind    three spins with a blade circling you
+#   Lv 10  Rend         a cleaving slash that makes targets Bleed (stacks 3)
+#   Lv 20  Warcry       party: +25% damage and a shield; enemies: Sundered (+15% taken)
+#   Passives  crit -> Cleave, kill -> Bloodlust, low health -> LastStand (Lv 10)
+# =====================================================================
+
+Charge:
+  description: "<gray>Leap forward and slam the ground, knocking enemies in front back."
+  cooldown: 6
+  mana: 15
+  conditions: [ { class: Warrior } ]
+  skills:
+  - leap: { forward: 1.6, up: 0.4 }
+  - particle: { type: CLOUD, amount: 12, spread: 0.4, speed: 0.05 }
+  - sound: { sound: entity.horse.jump, pitch: 0.8 }
+  - delay: 8
+  - shockwave: { particle: DUST_COLOR_TRANSITION, color: "#b91c1c", tocolor: "#f97316", size: 1.4, startradius: 0.5, maxradius: 4, speed: 0.6, density: 1.6 }
+    target: casterLocation
+  - damage: "5 + <caster.level> * 0.25"
+    target: { cone: { angle: 120, range: 4 } }
+  - push: { velocity: 0.6, mode: away, y: 0.3 }
+    target: { cone: { angle: 120, range: 4 } }
+  - particle: { type: EXPLOSION, amount: 2 }
+    target: casterLocation
+  - sound: { sound: entity.generic.explode, volume: 0.5, pitch: 1.2 }
+
+Whirlwind:
+  description: "<gray>Spin three times, hitting everything around you."
+  cooldown: 9
+  mana: 25
+  conditions: [ { class: Warrior }, { level: 5 } ]
+  skills:
+  - display: { type: item, material: IRON_SWORD, scale: 1.8, tilt: 90, y: 1, spin: 40, follow: true, duration: 30 }
+    target: casterLocation
+  - skill: Whirlwind_Spin
+  - delay: 10
+  - skill: Whirlwind_Spin
+  - delay: 10
+  - skill: Whirlwind_Spin
+
+Whirlwind_Spin:
+  skills:
+  - slash: { particle: SWEEP_ATTACK, radius: 3, arc: 360, forward: 0, points: 24, animate: true, duration: 6 }
+  - circle: { particle: DUST_COLOR_TRANSITION, color: "#e5e7eb", tocolor: "#b91c1c", size: 1.1, radius: 3.2, points: 40 }
+    target: casterLocation
+  - damage: "3 + <caster.level> * 0.15"
+    target: { nearby: 3.5 }
+  - sound: { sound: entity.player.attack.sweep, pitch: 0.9 }
+
+Rend:
+  description: "<gray>A cleaving slash; everything in front bleeds for 6 s (stacks 3)."
+  cooldown: 5
+  mana: 18
+  conditions: [ { class: Warrior }, { level: 10 } ]
+  skills:
+  - slash: { particle: DUST_COLOR_TRANSITION, color: "#b91c1c", tocolor: "#f97316", size: 1.4, radius: 3.5, arc: 140, points: 30 }
+  - slash: { particle: CRIT, radius: 3.3, arc: 140, points: 20 }
+  - damage: "4 + <caster.level> * 0.2"
+    target: { cone: { angle: 140, range: 4 } }
+  - aura: { id: Bleed, type: debuff, duration: 120, maxstacks: 3, interval: 20, ontick: Rend_Tick, particle: DAMAGE_INDICATOR }
+    target: { cone: { angle: 140, range: 4 } }
+  - sound: { sound: entity.player.attack.sweep, pitch: 0.7 }
+
+Rend_Tick:
+  skills:
+  - damage: "1 * <trigger.aura.bleed> + <caster.level> * 0.05"
+    target: trigger
+  - particle: { type: DAMAGE_INDICATOR, amount: 2, spread: 0.3 }
+    target: trigger
+
+Warcry:
+  description: "<gray>Allies: +25% damage and a shield for 8 s. Enemies: take +15% damage."
+  cooldown: 40
+  mana: 40
+  conditions: [ { class: Warrior }, { level: 20 } ]
+  skills:
+  - display: { type: text, text: "<gradient:#b91c1c:#f97316><bold>FOR GLORY!", y: 2.6, rise: 0.8, scale: 1.4, duration: 30 }
+    target: casterLocation
+  - shockwave: { particle: DUST_COLOR_TRANSITION, color: "#f97316", tocolor: "#fde047", size: 1.6, startradius: 0.5, maxradius: 10, speed: 0.7, density: 1.2 }
+    target: casterLocation
+  - aura: { id: Warcry, duration: 160, damage-dealt: 0.25, shield: "6 + <caster.level> * 0.2", particle: CRIT }
+  - aura: { id: Warcry, duration: 160, damage-dealt: 0.25, shield: "6 + <caster.level> * 0.2", particle: CRIT }
+    target: { nearby: { radius: 10, filter: allies } }
+  - aura: { id: Sundered, type: debuff, duration: 160, damage-taken: 0.15, particle: ANGRY_VILLAGER }
+    target: { nearby: { radius: 10 } }
+  - sound: { sound: event.raid.horn, volume: 0.7 }
+
+# --- Passives (classes.yml) ---------------------------------------------------
+Cleave:
+  cooldown: 1
+  skills:
+  - slash: { particle: SWEEP_ATTACK, radius: 3, arc: 110, points: 14 }
+  - damage: "3 + <caster.level> * 0.1"
+    target: { cone: { angle: 100, range: 4 } }
+  - sound: { sound: entity.player.attack.sweep, pitch: 1.2 }
+
+Bloodlust:
+  skills:
+  - aura: { id: Bloodlust, duration: 100, maxstacks: 3, damage-dealt: 0.1, particle: CRIT }
+  - skill: Fx_BloodBurst
+
+LastStand:
+  cooldown: 60
+  skills:
+  - aura: { id: LastStand, duration: 200, shield: "6 + <caster.level> * 0.2", particle: ENCHANT }
+  - helix: { particle: DUST_COLOR_TRANSITION, color: "#fde047", tocolor: "#b91c1c", size: 1.2, radius: 1, height: 2.2, coils: 2, points: 40, strands: 2 }
+    target: casterLocation
+  - sound: { sound: item.totem.use, volume: 0.5 }
+  - message: "<gold>Last Stand!"

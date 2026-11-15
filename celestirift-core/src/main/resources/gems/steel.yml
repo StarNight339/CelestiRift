@@ -1,0 +1,10 @@
+# Steel gems - palette #e5e7eb -> #60a5fa. Field reference: gems.yml
+
+BladeGem:
+  skill: SwordRain
+  tier: 4
+  trigger: SWAP_HANDS
+  material: IRON_NUGGET
+  name: "<gradient:#e5e7eb:#60a5fa><bold>Blade Gem</bold></gradient>"
+  lore:
+  - "A thousand edges, folded into one stone."

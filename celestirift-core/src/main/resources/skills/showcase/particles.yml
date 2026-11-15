@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Particle shapes (written in the classic one-line format, which still works).
+#  Test with: /cr cast <SkillName>
+#
+#  Shape mechanics (all share the ParticleSpec attributes):
+#    particle=<TYPE>  count=<n>  offset=<spread>  speed=<n>
+#    color=#RRGGBB    size=<n>   tocolor=#RRGGBB   (color/size = DUST particles)
+#
+#    circle{radius;points;plane=xz|xy|yz}
+#    sphere{radius;points}
+#    helix{radius;height;coils;points;strands}
+#    line{step}                              (caster eye -> target location)
+#    slash{radius;arc;forward;points;animate;duration;curve}
+#    blackhole{radius;arms;points;duration;spin;tightness;pull;pullStrength}
+# =====================================================================
+
+AuraRing:
+  Cooldown: 2
+  Skills:
+  - circle{particle=DUST;color=#a855f7;radius=2.2;points=50} @casterLocation
+  - circle{particle=DUST;color=#ec4899;radius=1.6;points=40} @casterLocation
+  - sound{sound=block.enchantment_table.use} @self
+
+HolySphere:
+  Cooldown: 4
+  Skills:
+  - sphere{particle=END_ROD;radius=2;points=140} @casterLocation
+  - sound{sound=block.beacon.activate} @self
+
+RisingSpirit:
+  Cooldown: 4
+  Skills:
+  - helix{particle=SOUL_FIRE_FLAME;radius=1;height=4;coils=4;points=80;strands=2} @casterLocation
+  - sound{sound=particle.soul_escape} @self
+
+LaserBeam:
+  Cooldown: 3
+  Mana: 15
+  Skills:
+  - line{particle=DUST_COLOR_TRANSITION;color=#ff0000;tocolor=#ffff00;step=0.25} @targetLocation{range=25}
+  - damage{amount=6} @target
+  - sound{sound=entity.blaze.shoot} @self
+
+AirSlash:
+  Cooldown: 2
+  Mana: 12
+  Skills:
+  - slash{particle=SWEEP_ATTACK;radius=3;arc=170;forward=2.2;points=30;animate=true;duration=4} @self
+  - slash{particle=CLOUD;radius=3;arc=170;forward=2.2;points=30;animate=true;duration=4} @self
+  - damage{amount=5} @NearbyEntities{radius=4}
+  - sound{sound=entity.player.attack.sweep} @self
+
+Blackhole:
+  Cooldown: 12
+  Mana: 45
+  Skills:
+  - blackhole{particle=DUST;color=#8000ff;radius=5;arms=4;points=28;duration=50;spin=0.4;pull=true;pullStrength=0.6} @targetLocation{range=20}
+  - blackhole{particle=SMOKE;radius=3;arms=2;points=18;duration=50;pull=false} @targetLocation{range=20}
+  - delay{ticks=50}
+  - damage{amount=10} @NearbyEntities{radius=5}
+  - sound{sound=entity.wither.spawn} @self
+
+Tornado:
+  Cooldown: 10
+  Mana: 40
+  Skills:
+  - tornado{particle=CLOUD;radiusBottom=0.5;radiusTop=3.5;height=6;rings=14;points=18;duration=70;spin=0.5;pull=true;pullStrength=0.35;lift=0.2} @targetLocation{range=15}
+  - tornado{particle=DUST;color=#dddddd;radiusBottom=0.3;radiusTop=2.5;height=6;rings=10;points=10;duration=70} @targetLocation{range=15}
+  - sound{sound=entity.ender_dragon.flap} @self
+
+Shockwave:
+  Cooldown: 6
+  Mana: 20
+  Skills:
+  - shockwave{particle=CRIT;startRadius=0.5;maxRadius=9;speed=0.6;density=1.6} @casterLocation
+  - shockwave{particle=EXPLOSION;startRadius=0.5;maxRadius=9;speed=0.6;density=0.4} @casterLocation
+  - push{velocity=1.2;mode=away;y=0.4} @NearbyEntities{radius=6}
+  - sound{sound=entity.generic.explode} @self
+
+StarSeal:
+  Cooldown: 4
+  Skills:
+  - star{particle=DUST;color=#ffd700;spikes=5;radius=3;innerRatio=0.45;perEdge=10} @casterLocation
+  - circle{particle=DUST;color=#ffcc33;radius=3.1;points=60} @casterLocation
+  - sound{sound=block.enchantment_table.use} @self
+
+MagicMissile:
+  Cooldown: 2
+  Mana: 10
+  Skills:
+  - projectiletrail{particle=DUST;color=#00ffcc;speed=1.1;maxDistance=35;shape=helix;shapeRadius=0.4;shapePoints=2;hitRadius=1;damage=6;onHit=MagicMissile_Impact} @self
+  - sound{sound=entity.blaze.shoot;pitch=1.6} @self
+
+# Cast by MagicMissile when it hits — @origin is the impact point.
+MagicMissile_Impact:
+  Skills:
+  - shockwave{particle=DUST;color=#00ffcc;startRadius=0.3;maxRadius=3;speed=0.4;density=2} @origin
+  - particle{type=EXPLOSION;amount=3} @origin
+  - sound{sound=entity.generic.explode;pitch=1.4} @origin

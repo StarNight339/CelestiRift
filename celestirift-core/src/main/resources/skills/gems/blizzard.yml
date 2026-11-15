@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Fusion: Frost Gem + Storm Gem -> Blizzard Gem (fusions/blizzard.yml).
+# A storm cell where you look: 4 pulses of ice and lightning over 3 seconds.
+
+Blizzard:
+  description: "<gray>Call a blizzard where you look: 4 pulses of ice and lightning over 3 s."
+  cooldown: 16
+  mana: 50
+  skills:
+  - telegraph: { skill: Blizzard_Storm, radius: 5, duration: 15, color: "#93c5fd" }
+    target: { targetLocation: { range: 25 } }
+  - sound: { sound: entity.breeze.wind_burst, pitch: 0.7 }
+
+Blizzard_Storm:
+  skills:
+  - tornado: { particle: SNOWFLAKE, radiusbottom: 1, radiustop: 5, height: 7, rings: 12, points: 18, duration: 60, spin: 0.5 }
+    target: origin
+  - tornado: { particle: DUST_COLOR_TRANSITION, color: "#60a5fa", tocolor: "#e0f2fe", size: 1.2, radiusbottom: 0.6, radiustop: 4, height: 7, rings: 8, points: 10, duration: 60 }
+    target: origin
+  - skill: Blizzard_Pulse
+  - delay: 20
+  - skill: Blizzard_Pulse
+  - delay: 20
+  - skill: Blizzard_Pulse
+  - delay: 20
+  - skill: Blizzard_Pulse
+
+Blizzard_Pulse:
+  skills:
+  - damage: "4 + <caster.level> * 0.2"
+    target: { nearby: 5 }
+  - potion: { type: SLOWNESS, duration: 40, level: 3 }
+    target: { nearby: 5 }
+  - chain: { damage: "2 + <caster.level> * 0.1", jumps: 3, radius: 5, decay: 0.8, delay: 0, color: "#bfdbfe" }
+    target: { nearby: { radius: 5, limit: 1, sort: random } }
+  - sound: { sound: entity.player.hurt_freeze, volume: 0.6, pitch: 1.2 }
+    target: origin

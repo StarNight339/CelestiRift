@@ -1,0 +1,19 @@
+# Holy and nature gems - palettes #fde047 -> #fffbeb and #22c55e -> #bbf7d0. Field reference: gems.yml
+
+MendingGem:
+  skill: Heal
+  tier: 2
+  trigger: DROP_ITEM
+  material: GLOW_BERRIES
+  name: "<gradient:#22c55e:#bbf7d0><bold>Mending Gem</bold></gradient>"
+  lore:
+  - "Smells of rain and fresh moss."
+
+SmiteGem:
+  skill: Smite
+  tier: 5
+  trigger: ATTACK
+  material: GOLD_NUGGET
+  name: "<gradient:#fde047:#fffbeb:#fde047><bold>Gem of Judgement</bold></gradient>"
+  lore:
+  - "Your blows carry the weight of the heavens."

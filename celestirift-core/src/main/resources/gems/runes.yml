@@ -1,0 +1,45 @@
+# Runes (type: PASSIVE) - boost the active skills on the same weapon, or sit in
+# armour for a permanent buff and a boost to every skill you cast.
+# Field reference: gems.yml
+
+PowerRune:
+  type: PASSIVE
+  tier: 4
+  material: FIRE_CHARGE
+  power: 1.5                 # +50% damage/heal
+  name: "<gradient:#ff3d00:#ffb300><bold>Rune of Power</bold></gradient>"
+  lore:
+  - "Every spell burns a little hotter."
+
+FarsightRune:
+  type: PASSIVE
+  tier: 3
+  material: SPYGLASS
+  range: 1.4                 # +40% range/radius
+  cooldown: 0.85             # -15% cooldown
+  name: "<gradient:#38bdf8:#a855f7><bold>Rune of Farsight</bold></gradient>"
+  lore:
+  - "See further. Strike sooner."
+
+WardingRune:
+  type: PASSIVE
+  tier: 5
+  material: TOTEM_OF_UNDYING
+  buff:
+    type: RESISTANCE
+    duration: 100
+    level: 1                 # given each time an active skill fires
+  name: "<gradient:#fde047:#fffbeb:#fde047><bold>Rune of Warding</bold></gradient>"
+  lore:
+  - "A ward flickers to life with every cast."
+
+IronskinRune:
+  type: PASSIVE
+  tier: 4
+  material: NETHERITE_SCRAP
+  buff:
+    type: RESISTANCE
+    level: 1                 # no duration: only works in armour, permanent while worn
+  name: "<gradient:#9ca3af:#4b5563><bold>Rune of Ironskin</bold></gradient>"
+  lore:
+  - "Best set into armour."

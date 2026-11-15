@@ -1,0 +1,60 @@
+# =====================================================================
+#  CelestiRift classes. Players pick one with /class choose <id>
+#  (once, unless classes.allow-change: true in config.yml); admins use
+#  /cr class set <player> <id|none>. Split into classes/*.yml if you like.
+#
+#  Stats grow with level:  value = base + per-level × (level - 1)
+#
+#  display        MiniMessage name
+#  description    MiniMessage text for /class
+#  icon           item for menus (future class GUI)
+#  mana           { base, per-level }   max mana  (default: mana.max)
+#  mana-regen     { base, per-level }   per second (default: mana.regen-per-second)
+#  socket-bonus   extra socket slots this class can add with Shardvoid
+#                 (above gems.max-slots)
+#  starting-gems  gems.yml ids given once when the class is chosen
+#  permission     (optional) needed to choose it, e.g. for VIP classes
+#  passives       skills cast automatically on a trigger (see skills/classes/<class>.yml):
+#                 - { trigger: crit, skill: Cleave }
+#                 - { trigger: timer, every: 5, skill: Blessing, min-level: 5 }
+#                 - { trigger: kill, skill: Bloodlust, chance: 0.5 }
+#                 triggers: attack crit projectile_hit kill damaged low_health timer
+#                           sneak unsneak left_click right_click swap_hands drop_item join
+#
+#  Use in skills:  if: [ { class: Mage } ]   or   ?class{is=Mage,Warlock}
+#                  if: [ { level: 10 } ]     or   ?level{min=10;max=20}
+#  Placeholders:   <caster.level>  <caster.class>
+# =====================================================================
+
+Mage:
+  display: "<gradient:#a855f7:#3b82f6><bold>Mage</bold></gradient>"
+  description: "<gray>Huge mana pool, fast regeneration."
+  icon: BLAZE_ROD
+  mana: { base: 150, per-level: 6 }
+  mana-regen: { base: 7, per-level: 0.25 }
+  starting-gems: [EmberGem]
+  passives:
+  - { trigger: low_health, skill: ManaBarrier }
+
+Warrior:
+  display: "<gradient:#ef4444:#f97316><bold>Warrior</bold></gradient>"
+  description: "<gray>Less mana, but one extra socket on every weapon."
+  icon: IRON_SWORD
+  mana: { base: 80, per-level: 2 }
+  mana-regen: { base: 4, per-level: 0.1 }
+  socket-bonus: 1
+  starting-gems: [SmiteGem]
+  passives:
+  - { trigger: crit, skill: Cleave }
+  - { trigger: kill, skill: Bloodlust }
+  - { trigger: low_health, skill: LastStand, min-level: 10 }
+
+Cleric:
+  display: "<gradient:#facc15:#fef08a><bold>Cleric</bold></gradient>"
+  description: "<gray>Balanced mana, starts with healing."
+  icon: GOLDEN_APPLE
+  mana: { base: 120, per-level: 4 }
+  mana-regen: { base: 6, per-level: 0.2 }
+  starting-gems: [MendingGem]
+  passives:
+  - { trigger: timer, every: 5, skill: Blessing }

@@ -1,0 +1,48 @@
+name: Release
+
+# Push a tag like v2.0.0 to build, smoke-test and publish that version.
+# Repository secrets: HANGAR_API_TOKEN, MODRINTH_TOKEN (leave one unset to skip that site).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write   # GitHub release
+  packages: write   # celestirift-api to GitHub Packages
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.ref_name }}
+      HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Version from tag
+        run: echo "VERSION=${VERSION#v}" >> "$GITHUB_ENV"
+      - name: Build and smoke test
+        run: ./gradlew build resourcePack :celestirift-core:smokeTest -Pversion=$VERSION
+      - name: GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            celestirift-core/build/libs/CelestiRift-${{ env.VERSION }}.jar
+            celestirift-core/build/resourcepack/CelestiRift-pack.zip
+          body_path: CHANGELOG.md
+      - name: Publish API to GitHub Packages
+        run: ./gradlew :celestirift-api:publish -Pversion=$VERSION
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Hangar
+        if: ${{ env.HANGAR_API_TOKEN != '' }}
+        run: ./gradlew :celestirift-core:publishPluginPublicationToHangar -Pversion=$VERSION
+      - name: Modrinth
+        if: ${{ env.MODRINTH_TOKEN != '' }}
+        run: ./gradlew :celestirift-core:modrinth -Pversion=$VERSION

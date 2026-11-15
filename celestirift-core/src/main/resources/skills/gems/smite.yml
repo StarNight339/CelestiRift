@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Gem of Judgement / Dark Gem (gems.yml) - a holy sigil, then lightning on your foe.
+
+Smite:
+  description: "<gray>Brand your foe with a holy sigil and call lightning down on it."
+  cooldown: 6
+  mana: 15
+  skills:
+  - star: { particle: DUST, color: "#fde047", size: 1.3, spikes: 5, radius: 1.8, innerratio: 0.4, peredge: 8 }
+    target: { target: 30 }
+  - circle: { particle: DUST, color: "#fffbeb", size: 1, radius: 1.9, points: 40 }
+    target: { target: 30 }
+  - delay: 6
+  - lightning: { damage: false }
+    target: { target: 30 }
+  - damage: "5 + <caster.level> * 0.25"
+    target: { target: 30 }
+  - particle: { type: END_ROD, amount: 20, spread: 0.4, speed: 0.15 }
+    target: { target: 30 }
+  - message: "<gold>Smite strikes <white><target.name></white>!"

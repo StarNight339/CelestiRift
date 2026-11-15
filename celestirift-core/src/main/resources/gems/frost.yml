@@ -1,0 +1,10 @@
+# Frost gems - palette #38bdf8 -> #e0f2fe. Field reference: gems.yml
+
+FrostGem:
+  skill: FrostNova
+  tier: 4
+  trigger: SWAP_HANDS
+  material: PRISMARINE_CRYSTALS
+  name: "<gradient:#38bdf8:#e0f2fe><bold>Frost Gem</bold></gradient>"
+  lore:
+  - "Frost creeps across your hand when you hold it."

@@ -1,0 +1,27 @@
+name: CelestiRift
+version: '${version}'
+main: com.celestirift.CelestiRift
+api-version: '26.3'
+softdepend: [OrionRP]
+author: CelestiRift
+description: A MythicMobs-style custom skill framework.
+website: https://celestirift.example
+
+# Commands are registered with Brigadier in code (CelestiRiftCommand).
+
+permissions:
+  celestirift.admin:
+    description: Full access to CelestiRift admin commands.
+    default: op
+  celestirift.use:
+    description: Allows casting skills bound to items.
+    default: true
+  celestirift.class:
+    description: Use /class to view and choose a class.
+    default: true
+  celestirift.profile:
+    description: Use /profile to see your level, XP, class and mana.
+    default: true
+  celestirift.profile.others:
+    description: Use /profile <player>.
+    default: op

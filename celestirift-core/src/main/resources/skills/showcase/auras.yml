@@ -1,0 +1,124 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  Auras: buffs, debuffs, stacks, shields and combos.
+#  Test them on training dummies: /cr dummy spawn  (enemy)  /cr dummy spawn ally
+#
+#  - aura:
+#      id: Mark              name of the aura (reapplying adds stacks)
+#      type: debuff          buff | debuff (debuffs never land on your own team)
+#      duration: 160         ticks (20 = 1 s); formulas allowed
+#      stacks: 1             stacks added per application
+#      maxstacks: 5
+#      refresh: true         reapplying resets the timer
+#      damage-taken: 0.05    +5% damage taken PER STACK   (damage-dealt, speed too)
+#      shield: 8             absorbs damage; the aura ends when it breaks
+#      interval: 20          run ontick every N ticks
+#      ontick: SomeSkill     cast by whoever applied it, @trigger = the holder (DoT)
+#      onend: SomeSkill      same, when it expires or the shield breaks
+#      onhit: SomeSkill      cast by the holder when it hits, @trigger = victim
+#      onhit-consume: 1      ...and remove 1 stack each time ("next 3 hits")
+#      ondamaged: SomeSkill  cast by the holder when hit, @trigger = attacker
+#      particle: WITCH       shown around the holder
+#
+#  - removeaura: Mark                     remove it (stacks: n for only some)
+#  - removeaura: { type: debuff }         cleanse all debuffs
+#  if: [ { hasaura: { id: Mark, stacks: ">=3" } } ]
+#  Formulas: <target.aura.mark> (stacks), <target.aura.mark.time> (s left), .shield
+# =====================================================================
+
+# --- Combo: mark, then detonate -------------------------------------------
+ArcaneMark:
+  description: "<gray>Mark the target. Stacks up to 5; each stack: +5% damage taken."
+  cooldown: 1
+  mana: 5
+  skills:
+  - aura: { id: Mark, type: debuff, duration: 160, maxstacks: 5, damage-taken: 0.05, particle: WITCH }
+    target: target
+  - sound: { sound: entity.illusioner.cast_spell, pitch: 1.6 }
+
+Detonate:
+  description: "<gray>Consume all Marks: 5 + 4 damage per stack."
+  cooldown: 6
+  mana: 20
+  skills:
+  - damage: "5 + 4 * <target.aura.mark>"
+    target: target
+    if: [ { hasaura: Mark } ]
+  - particle: { type: EXPLOSION, amount: 3 }
+    target: target
+    if: [ { hasaura: Mark } ]
+  - removeaura: Mark
+    target: target
+
+# --- Damage over time -------------------------------------------------------
+Immolate:
+  description: "<gray>Burn the target for 5 s. Stacks 3 times."
+  cooldown: 2
+  mana: 10
+  skills:
+  - aura: { id: Burning, type: debuff, duration: 100, maxstacks: 3, interval: 20, ontick: Immolate_Tick, particle: FLAME }
+    target: target
+
+Immolate_Tick:
+  skills:
+  - damage: "1.5 * <trigger.aura.burning>"
+    target: trigger
+
+# --- Buffs ------------------------------------------------------------------
+BattleCry:
+  description: "<gray>You and nearby allies: +20% damage, +15% speed for 10 s."
+  cooldown: 20
+  mana: 30
+  skills:
+  - aura: { id: BattleCry, duration: 200, damage-dealt: 0.2, speed: 0.15, particle: CRIT }
+  - aura: { id: BattleCry, duration: 200, damage-dealt: 0.2, speed: 0.15, particle: CRIT }
+    target: { nearby: { radius: 10, filter: allies } }
+  - sound: { sound: event.raid.horn, volume: 0.6 }
+
+ArcaneShield:
+  description: "<gray>Absorb 4 + 0.3 per level damage for 10 s."
+  cooldown: 15
+  mana: 25
+  skills:
+  - aura: { id: ArcaneShield, duration: 200, shield: "4 + <caster.level> * 0.3", particle: ENCHANT, onend: ArcaneShield_End }
+
+ArcaneShield_End:
+  skills:
+  - sound: { sound: block.amethyst_block.break }
+    target: trigger
+
+Empower:
+  description: "<gray>Your next 3 hits deal 4 bonus damage."
+  cooldown: 12
+  mana: 15
+  skills:
+  - aura: { id: Empower, stacks: 3, maxstacks: 3, duration: 200, onhit: Empower_Hit, onhit-consume: 1, particle: CRIT }
+
+Empower_Hit:
+  skills:
+  - damage: 4
+    target: trigger
+  - particle: { type: ENCHANTED_HIT, amount: 12 }
+    target: trigger
+
+Thorns:
+  description: "<gray>For 10 s, attackers take 2 damage."
+  cooldown: 20
+  mana: 20
+  skills:
+  - aura: { id: Thorns, duration: 200, ondamaged: Thorns_Hit }
+
+Thorns_Hit:
+  skills:
+  - damage: 2
+    target: trigger
+
+Cleanse:
+  description: "<gray>Remove every debuff from you and nearby allies."
+  cooldown: 10
+  mana: 15
+  skills:
+  - removeaura: { type: debuff }
+  - removeaura: { type: debuff }
+    target: { nearby: { radius: 8, filter: allies } }
+  - particle: { type: HAPPY_VILLAGER, amount: 20, spread: 1 }

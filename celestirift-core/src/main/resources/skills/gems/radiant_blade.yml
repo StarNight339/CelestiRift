@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Fusion: Gem of Judgement + Blade Gem -> Radiant Gem (fusions/radiant_blade.yml).
+# A colossal golden sword falls from the sky onto your target.
+
+RadiantBlade:
+  description: "<gray>A colossal sword of light falls onto your target, then explodes in holy fire."
+  cooldown: 18
+  mana: 55
+  skills:
+  - telegraph: { radius: 3.5, duration: 18, color: "#fde047" }
+    target: { target: 30 }
+  - display: { type: item, material: GOLDEN_SWORD, scale: 4, tilt: 135, y: 9, rise: -8.6, duration: 18, glow: true, glowcolor: "#fde047", onend: RadiantBlade_Impact }
+    target: { target: 30 }
+  - sound: { sound: block.beacon.activate, pitch: 1.4 }
+
+RadiantBlade_Impact:
+  skills:
+  - damage: "16 + <caster.level> * 0.6"
+    target: { nearby: 3.5 }
+  - push: { velocity: 0.8, mode: away, y: 0.6 }
+    target: { nearby: 3.5 }
+  - lightning: { damage: false }
+    target: origin
+  - star: { particle: DUST, color: "#fde047", size: 1.5, spikes: 8, radius: 3.5, innerratio: 0.5, peredge: 6 }
+    target: origin
+  - skill: Fx_HolyBurst

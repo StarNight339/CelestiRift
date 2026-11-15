@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Starfall Gem (gems.yml, legendary) - call a falling star where you look.
+# Enemies get a 1 s warning circle; the star lands when it fills.
+
+Starfall:
+  description: "<gray>Call a falling star where you look. Enemies see it coming for 1 second."
+  cooldown: 14
+  mana: 45
+  skills:
+  - telegraph: { radius: 4, duration: 20, color: "#fde047" }
+    target: { targetLocation: { range: 30 } }
+  - meteor: { block: SHROOMLIGHT, scale: 1.4, height: 20, drift: 7, duration: 20, trail: END_ROD, onland: Starfall_Impact }
+    target: { targetLocation: { range: 30 } }
+  - sound: { sound: block.beacon.activate, pitch: 1.9 }
+
+Starfall_Impact:
+  skills:
+  - damage: "12 + <caster.level> * 0.5"
+    target: { nearby: 4 }
+  - push: { velocity: 0.9, mode: away, y: 0.5 }
+    target: { nearby: 4 }
+  - star: { particle: DUST, color: "#fde047", size: 1.5, spikes: 5, radius: 4, innerratio: 0.45, peredge: 10 }
+    target: origin
+  - skill: Fx_HolyBurst
+  - skill: Fx_FireBurst

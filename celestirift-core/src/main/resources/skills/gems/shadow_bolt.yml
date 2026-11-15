@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Dark Gem (gems.yml) - a slow orb of void that withers whatever it touches.
+
+ShadowBolt:
+  description: "<gray>A slow orb of void. Withers and weakens what it touches."
+  cooldown: 4
+  mana: 18
+  skills:
+  - projectiletrail: { particle: DUST_COLOR_TRANSITION, color: "#4c1d95", tocolor: "#0f0a1a", size: 1.8, speed: 0.8, maxdistance: 26, shape: ring, shaperadius: 0.35, shapepoints: 5, hitradius: 1.3, damage: "5 + <caster.level> * 0.25", onhit: ShadowBolt_Impact }
+  - sound: { sound: entity.wither.ambient, volume: 0.5, pitch: 1.6 }
+
+ShadowBolt_Impact:
+  skills:
+  - potion: { type: WITHER, duration: 60, level: 1 }
+    target: { nearby: 2.5 }
+  - potion: { type: WEAKNESS, duration: 80, level: 1 }
+    target: { nearby: 2.5 }
+  - skill: Fx_ShadowBurst

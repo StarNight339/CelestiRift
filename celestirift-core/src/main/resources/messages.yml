@@ -1,0 +1,54 @@
+# =====================================================================
+#  CelestiRift player-facing messages (MiniMessage format).
+#  https://docs.advntr.dev/minimessage/format.html
+#  Set a message to "" to disable it. Missing keys use the built-in default.
+#  Reload with /cr reload.
+# =====================================================================
+
+cast:
+  # <skill>
+  unknown-skill: "<red>Unknown skill: <skill>"
+  # <skill>
+  conditions-failed: "<red>You can't cast <skill> right now."
+  # <skill>, <remaining> (seconds)
+  cooldown: "<red><skill> on cooldown (<remaining>s)"
+  # <mana>, <cost>
+  no-mana: "<red>Not enough mana (<mana>/<cost>)"
+  # Skills with cast-time. <skill>, <bar>, <remaining> (seconds)
+  casting: "<gray>Casting <white><skill></white> <bar> <gray><remaining>s"
+  interrupted: "<red><skill> interrupted!"
+  busy: "<red>You are already casting."
+
+mana:
+  # Action bar shown while regenerating and after casting. <mana>, <max>
+  actionbar: "<aqua>Mana: <white><mana>/<max>"
+
+rpg:
+  # <xp>, <current>, <needed>  (shown for kills/commands, not every cast)
+  xp-gain: "<green>+<xp> XP <dark_gray>(<current>/<needed>)"
+  # Action bar on level-up. <level>
+  level-up: "<gold><bold>LEVEL UP!</bold> <yellow>Level <level>"
+
+class:
+  list-header: '<gold>Classes <gray>(/class choose \<name>, /class info \<name>)'
+  # <id>, <display>, <description>
+  list-entry: "<gray> • <display> <dark_gray>(<id>) <gray>- <description>"
+  current: "<gray>Your class: <display>"
+  none: "<gray>You have no class yet."
+  # <display>
+  chosen: "<green>You are now a <display><green>!"
+  already: "<red>You already have a class. Ask an admin to change it."
+  # <class>
+  unknown: "<red>Unknown class: <class>"
+  no-permission: "<red>You can't choose <display><red>."
+  # <display>, <description>, <mana>, <mana_per_level>, <regen>, <sockets>, <gems>
+  info: "<display>\n<gray><description>\n<gray>Mana: <aqua><mana></aqua> (+<mana_per_level>/level) · Regen: <aqua><regen>/s</aqua>\n<gray>Extra sockets: <white><sockets></white> · Starting gems: <white><gems>"
+
+profile:
+  header: "<gold><bold><player></bold>"
+  # <level>, <xp>, <needed>
+  level: "<gray>Level <white><level></white> <dark_gray>(<xp>/<needed> XP)"
+  # <class>
+  class: "<gray>Class: <class>"
+  # <mana>, <max>
+  mana: "<gray>Mana: <aqua><mana>/<max>"

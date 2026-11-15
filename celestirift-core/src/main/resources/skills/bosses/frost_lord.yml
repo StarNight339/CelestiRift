@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# =====================================================================
+#  FROST LORD - skills used by bosses/frost_lord.yml. They run AS the boss:
+#  @self = the boss, @target = what it fights, @trigger = attacker / killer.
+#  "nearby" hits the boss's enemies (players and their pets), never its minions.
+#  Every big hit is telegraphed so players can dodge.
+# =====================================================================
+
+FrostLord_Intro:
+  skills:
+  - message: "<gradient:#7dd3fc:#3b82f6><bold>The Frost Lord awakens!</bold></gradient> <gray>The air turns to ice..."
+    target: { nearby: { radius: 40 } }
+  - display: { type: text, text: "<gradient:#7dd3fc:#3b82f6><bold>❄ FROST LORD ❄", y: 3, rise: 1, scale: 1.6, duration: 50 }
+    target: casterLocation
+  - shockwave: { particle: SNOWFLAKE, startradius: 0.5, maxradius: 14, speed: 0.6, density: 1.5 }
+    target: casterLocation
+  - helix: { particle: DUST_COLOR_TRANSITION, color: "#38bdf8", tocolor: "#e0f2fe", size: 1.5, radius: 1.5, height: 4, coils: 3, points: 70, strands: 3 }
+    target: casterLocation
+  - sound: { sound: entity.wither.spawn, pitch: 1.6 }
+
+# A blue circle fills under the boss for 1.5 s, then the nova hits everyone still inside.
+FrostLord_Nova:
+  skills:
+  - telegraph: { skill: FrostLord_NovaBlast, radius: 6, duration: 30, color: "#4da6ff" }
+    target: casterLocation
+  - sound: { sound: block.beacon.power_select, pitch: 1.8 }
+
+FrostLord_NovaBlast:
+  skills:
+  - sphere: { particle: DUST_COLOR_TRANSITION, color: "#38bdf8", tocolor: "#e0f2fe", size: 1.6, radius: 5, points: 160 }
+    target: origin
+  - shockwave: { particle: SNOWFLAKE, startradius: 0.5, maxradius: 6, speed: 0.7, density: 2 }
+    target: origin
+  - display: { type: block, material: PACKED_ICE, scale: 0.1, endscale: 1.2, tilt: 18, duration: 8 }
+    target: { nearby: { radius: 6, limit: 6 } }
+  - damage: 6
+    target: { nearby: { radius: 6 } }
+  - potion: { type: SLOWNESS, duration: 80, level: 2 }
+    target: { nearby: { radius: 6 } }
+  - sound: { sound: block.glass.break, pitch: 0.6 }
+    target: origin
+
+# A lance of ice at its target: an aimed line, slow and painful.
+FrostLord_Lance:
+  skills:
+  - line: { particle: DUST_COLOR_TRANSITION, color: "#7dd3fc", tocolor: "#ffffff", size: 1.4, step: 0.25 }
+    target: { target: 24 }
+  - damage: 5
+    target: { target: 24 }
+  - potion: { type: SLOWNESS, duration: 40, level: 1 }
+    target: { target: 24 }
+  - particle: { type: ITEM_SNOWBALL, amount: 12, spread: 0.4 }
+    target: { target: 24 }
+  - sound: { sound: entity.player.hurt_freeze, pitch: 0.8 }
+
+# Sometimes, when hit, it blinks to the attacker.
+FrostLord_Blink:
+  skills:
+  - sphere: { particle: SNOWFLAKE, radius: 1.2, points: 40 }
+    target: casterLocation
+  - teleport:
+    target: trigger
+  - sphere: { particle: DUST, color: "#bae6fd", size: 1.2, radius: 1.2, points: 40 }
+    target: casterLocation
+  - sound: { sound: entity.enderman.teleport, pitch: 0.7 }
+
+FrostLord_Minions:
+  skills:
+  - message: "<aqua>Frost Lord: <white>Rise, my frozen guard!"
+    target: { nearby: { radius: 40 } }
+  - star: { particle: DUST, color: "#7dd3fc", size: 1.3, spikes: 6, radius: 3.5, innerratio: 0.4, peredge: 8 }
+    target: casterLocation
+  - summon: { type: STRAY, amount: 3, radius: 3, duration: 1200, health: 30, name: "<aqua>Frozen Guard" }
+    target: casterLocation
+  - sound: { sound: entity.evoker.prepare_summon, pitch: 0.8 }
+
+FrostLord_Enrage:
+  skills:
+  - message: "<red><bold>The Frost Lord is enraged!"
+    target: { nearby: { radius: 40 } }
+  - display: { type: text, text: "<red><bold>ENRAGED", y: 3, rise: 0.8, scale: 1.5, duration: 40 }
+    target: casterLocation
+  - potion: { type: SPEED, duration: 6000, level: 2 }
+  - potion: { type: STRENGTH, duration: 6000, level: 1 }
+  - tornado: { particle: SNOWFLAKE, radiustop: 4, height: 6, duration: 60, pull: true }
+    target: casterLocation
+  - sound: { sound: entity.ravager.roar, pitch: 0.8 }
+
+FrostLord_Shatter:
+  skills:
+  - shockwave: { particle: DUST_COLOR_TRANSITION, color: "#bae6fd", tocolor: "#ffffff", size: 1.6, startradius: 0.5, maxradius: 10, speed: 0.7, density: 1.5 }
+    target: casterLocation
+  - sphere: { particle: SNOWFLAKE, radius: 3, points: 120 }
+    target: casterLocation
+  - sound: { sound: block.glass.break, pitch: 0.5 }
+  - message: "<aqua>The Frost Lord shatters into a thousand shards!"
+    target: { nearby: { radius: 40 } }

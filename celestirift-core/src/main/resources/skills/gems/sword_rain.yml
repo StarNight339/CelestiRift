@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../schema/skills.schema.json
+# Blade Gem (gems.yml) - phantom swords appear above enemies and fall on them.
+
+SwordRain:
+  description: "<gray>Phantom blades appear above up to 6 enemies nearby and crash down."
+  cooldown: 10
+  mana: 35
+  skills:
+  - circle: { particle: DUST_COLOR_TRANSITION, color: "#e5e7eb", tocolor: "#60a5fa", size: 1.1, radius: 8, points: 80 }
+    target: casterLocation
+  - display: { type: item, material: IRON_SWORD, scale: 1.6, tilt: 135, y: 4, rise: -3.6, duration: 14, glow: true, glowcolor: "#cbd5e1", onend: SwordRain_Hit }
+    target: { nearby: { radius: 8, limit: 6, sort: nearest } }
+  - sound: { sound: item.trident.riptide_1, pitch: 1.4 }
+
+SwordRain_Hit:
+  skills:
+  - damage: "5 + <caster.level> * 0.2"
+    target: { nearby: 1.5 }
+  - particle: { type: CRIT, amount: 16, spread: 0.4, speed: 0.3 }
+    target: origin
+  - particle: { type: SWEEP_ATTACK, amount: 1 }
+    target: origin
+  - sound: { sound: item.trident.hit, pitch: 1.2 }
+    target: origin

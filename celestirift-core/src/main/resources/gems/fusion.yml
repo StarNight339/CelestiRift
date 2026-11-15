@@ -1,0 +1,29 @@
+# Fusion results - made only in the socket menu's Fusion tab (recipes: fusions/).
+# They are normal gems, so /cr gem <id> also gives them. Field reference: gems.yml
+
+BlackfireGem:
+  skill: BlackfireBall
+  tier: 5
+  trigger: RIGHT_CLICK
+  material: SOUL_LANTERN
+  name: "<gradient:#7c3aed:#22d3ee:#7c3aed><bold>Blackfire Gem</bold></gradient>"
+  lore:
+  - "Ember and void, bound into one hungry flame."
+
+BlizzardGem:
+  skill: Blizzard
+  tier: 5
+  trigger: RIGHT_CLICK
+  material: BLUE_ICE
+  name: "<gradient:#38bdf8:#e0e7ff:#60a5fa><bold>Blizzard Gem</bold></gradient>"
+  lore:
+  - "Somewhere inside, a storm is still raging."
+
+RadiantGem:
+  skill: RadiantBlade
+  tier: 5
+  trigger: SWAP_HANDS
+  material: GOLD_INGOT
+  name: "<gradient:#fde047:#ffffff:#fde047><bold>Radiant Gem</bold></gradient>"
+  lore:
+  - "Judgement, given an edge."

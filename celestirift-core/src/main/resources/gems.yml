@@ -1,0 +1,29 @@
+# =====================================================================
+#  CelestiRift gems - field reference (gems may also be written right here)
+#
+#  Gems live in plugins/CelestiRift/gems/<element>.yml, one theme per file:
+#    gems/fire.yml  frost.yml  holy.yml  shadow.yml  storm.yml  steel.yml  runes.yml
+#  The skill each gem grants is in skills/gems/<skill>.yml.
+#
+#  Give one with /cr gem <GemId> [player]   ·   socket it with /cr socket
+#  The tooltip is built for you: skill description, trigger, mana, cooldown, tier stars.
+#
+#  <GemId>:
+#    skill     (active) the skill it grants
+#    type      ACTIVE (default) or PASSIVE (a rune that boosts the weapon's skills)
+#    tier      1-5: Common, Uncommon, Rare, Epic, Legendary (colours + stars)
+#    trigger   default trigger (players can change it in /cr trigger):
+#              RIGHT_CLICK, LEFT_CLICK, SWAP_HANDS, DROP_ITEM, SNEAK, UNSNEAK, ATTACK,
+#              CRIT, PROJECTILE_HIT, KILL, DAMAGED, LOW_HEALTH, TIMER, JOIN
+#    name      MiniMessage name (default: "<Tier> Skill Gem" in tier colours)
+#    lore      flavour lines, shown in dark grey italics
+#    material  vanilla item used without the resource pack (default gems.material)
+#    model     item model used ALWAYS (even without the pack). Prefer
+#              resource-pack.gem-models in config.yml, which is only used with the pack.
+#  Runes (type: PASSIVE):
+#    power     damage/heal multiplier     1.5 = +50%
+#    range     radius/range multiplier    1.4 = +40%
+#    cooldown  cooldown multiplier        0.85 = -15%
+#    buff      { type: RESISTANCE, duration: 100, level: 1 } given when a skill fires
+#              (socketed in armor: permanent while worn)
+# =====================================================================

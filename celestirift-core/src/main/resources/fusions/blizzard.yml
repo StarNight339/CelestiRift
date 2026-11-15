@@ -1,0 +1,5 @@
+# Frost Gem + Storm Gem -> Blizzard Gem. Field reference: fusions.yml
+
+Blizzard:
+  ingredients: [FrostGem, StormGem]
+  result-gem: BlizzardGem
