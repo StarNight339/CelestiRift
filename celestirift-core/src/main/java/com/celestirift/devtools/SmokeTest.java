@@ -334,7 +334,7 @@ public final class SmokeTest {
         check("shield absorbs then breaks", Math.abs((100 - b.getHealth()) - 3) < 0.01
                 && plugin.auras().stacks(b, "shield") == 0, "took " + (100 - b.getHealth()));
 
-        plugin.auras().apply(spec(java.util.Map.of("id", "Burning", "duration", 30, "interval", 10,
+        plugin.auras().apply(spec(java.util.Map.of("id", "Burning", "duration", 60, "interval", 20,
                 "ontick", "Immolate_Tick")), meta, c);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             check("DoT ticks (3 x 1.5) then the aura expires", Math.abs((100 - c.getHealth()) - 4.5) < 0.01 && plugin.auras().stacks(c, "burning") == 0,
@@ -342,7 +342,7 @@ public final class SmokeTest {
             a.remove();
             b.remove();
             c.remove();
-        }, 45);
+        }, 75); // ticks 20 apart: clear of the 10-tick hurt invulnerability window
     }
 
     /** Expressions read live values: <caster.mhp> * 2 on a zombie = 40. */
