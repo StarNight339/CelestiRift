@@ -22,12 +22,12 @@ jobs:
           #   paper: "26.4.build.+"
     name: Paper ${{ matrix.name }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "25"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - name: Build
         run: |
           if [ -n "${{ matrix.paper }}" ]; then
@@ -42,7 +42,7 @@ jobs:
       - name: In-server smoke test
         if: matrix.name == 'pinned'
         run: ./gradlew :celestirift-core:smokeTest
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: matrix.name == 'pinned'
         with:
           name: CelestiRift
