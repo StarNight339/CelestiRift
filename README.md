@@ -88,3 +88,8 @@ celestirift-core/
 docs/                       documentation (en, th)
 tools/                      helper scripts (placeholder textures, docs page)
 ```
+
+## License
+
+[MIT](LICENSE) © 2026 StarNight339. `libs/orionrp-api-*.jar` is the compile-only API of the
+optional OrionRP plugin and is not included in the CelestiRift jar.

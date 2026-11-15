@@ -8,17 +8,13 @@ plugins {
 
 description = "CelestiRift Paper plugin."
 
-repositories {
-    // OrionRP API (optional integration): run `./gradlew publishToMavenLocal` in the OrionRP project.
-    mavenLocal {
-        content { includeGroup("dev.orionrp") }
-    }
-}
-
 dependencies {
     implementation(project(":celestirift-api"))
-    // Optional: only used when OrionRP is installed (softdepend). Not bundled into the jar.
-    compileOnly("dev.orionrp:orionrp-api:${property("orionrpVersion")}")
+    // OrionRP API, compile-only (optional integration, softdepend; not bundled into the jar).
+    // The jar lives in libs/ so anyone can build. To update it: run `./gradlew publishToMavenLocal`
+    // in the OrionRP project and copy orionrp-api-<version>.jar from ~/.m2/repository/dev/orionrp/.
+    compileOnly(files(rootProject.layout.projectDirectory.file(
+        "libs/orionrp-api-${providers.gradleProperty("orionrpVersion").get()}.jar")))
 
     testImplementation(platform("org.junit:junit-bom:5.13.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
